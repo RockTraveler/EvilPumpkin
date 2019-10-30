@@ -44,6 +44,10 @@ public class SystemInfoTest {
 
     static List<String> oshi = new ArrayList<>();
 
+    public static void main(String[] args) {
+        test();
+    }
+
     /**
      * Test that this platform is implemented..
      */
@@ -74,11 +78,11 @@ public class SystemInfoTest {
         logger.info("Checking CPU...");
         printCpu(hal.getProcessor());
 
-//        logger.info("Checking Processes...");
-//        printProcesses(os, hal.getMemory());
-//
-//        logger.info("Checking Services...");
-//        printServices(os);
+        logger.info("Checking Processes...");
+        printProcesses(os, hal.getMemory());
+
+        logger.info("Checking Services...");
+        printServices(os);
 
         logger.info("Checking Sensors...");
         printSensors(hal.getSensors());

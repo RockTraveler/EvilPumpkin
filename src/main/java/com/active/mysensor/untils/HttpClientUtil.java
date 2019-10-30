@@ -70,14 +70,8 @@ public class HttpClientUtil {
 
 
    public static void main(String[] args) {
-      Map<String, String> map = new HashMap<>();
-      map.put("text", "活跃网络C");
-      map.put("desp", "这里也是中文");
 
-      doPost("https://sc.ftqq.com/SCU48981T4fb6e368a395cf49b26f8bec99fe6cbf5cb93aed4ba36.send",map);
 
-      JSONObject json = JSONObject.parseObject(JSON.toJSONString(map));
-//      doPostJson("https://sc.ftqq.com/SCU48981T4fb6e368a395cf49b26f8bec99fe6cbf5cb93aed4ba36.send",JSON.toJSONString(map));
    }
 
 
