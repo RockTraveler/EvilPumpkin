@@ -10,21 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import oshi.SystemInfo;
-import oshi.hardware.CentralProcessor;
+import oshi.hardware.*;
 import oshi.hardware.CentralProcessor.TickType;
-import oshi.hardware.ComputerSystem;
-import oshi.hardware.Display;
-import oshi.hardware.GlobalMemory;
-import oshi.hardware.HWDiskStore;
-import oshi.hardware.HWPartition;
-import oshi.hardware.HardwareAbstractionLayer;
-import oshi.hardware.NetworkIF;
-import oshi.hardware.PhysicalMemory;
-import oshi.hardware.PowerSource;
-import oshi.hardware.Sensors;
-import oshi.hardware.SoundCard;
-import oshi.hardware.UsbDevice;
-import oshi.hardware.VirtualMemory;
+import oshi.hardware.platform.mac.MacNetworks;
 import oshi.software.os.FileSystem;
 import oshi.software.os.NetworkParams;
 import oshi.software.os.OSFileStore;
@@ -64,7 +52,9 @@ public class SystemInfoTest {
         HardwareAbstractionLayer hal = si.getHardware();
         OperatingSystem os = si.getOperatingSystem();
 
+        System.out.println("OS:"+System.getProperty("os.name"));
         printOperatingSystem(os);
+
 
         logger.info("Checking computer system...");
         printComputerSystem(hal.getComputerSystem());
@@ -87,31 +77,31 @@ public class SystemInfoTest {
         logger.info("Checking Sensors...");
         printSensors(hal.getSensors());
 
-//        logger.info("Checking Power sources...");
-//        printPowerSources(hal.getPowerSources());
-//
-//        logger.info("Checking Disks...");
-//        printDisks(hal.getDiskStores());
-//
-//        logger.info("Checking File System...");
-//        printFileSystem(os.getFileSystem());
-//
+        logger.info("Checking Power sources...");
+        printPowerSources(hal.getPowerSources());
+
+        logger.info("Checking Disks...");
+        printDisks(hal.getDiskStores());
+
+        logger.info("Checking File System...");
+        printFileSystem(os.getFileSystem());
+
         logger.info("Checking Network interfaces...");
         printNetworkInterfaces(hal.getNetworkIFs());
-//
-//        logger.info("Checking Network parameters...");
-//        printNetworkParameters(os.getNetworkParams());
-//
-//        // hardware: displays
-//        logger.info("Checking Displays...");
-//        printDisplays(hal.getDisplays());
-//
-//        // hardware: USB devices
-//        logger.info("Checking USB Devices...");
-//        printUsbDevices(hal.getUsbDevices(true));
-//
-//        logger.info("Checking Sound Cards...");
-//        printSoundCards(hal.getSoundCards());
+
+        logger.info("Checking Network parameters...");
+        printNetworkParameters(os.getNetworkParams());
+
+        // hardware: displays
+        logger.info("Checking Displays...");
+        printDisplays(hal.getDisplays());
+
+        // hardware: USB devices
+        logger.info("Checking USB Devices...");
+        printUsbDevices(hal.getUsbDevices(true));
+
+        logger.info("Checking Sound Cards...");
+        printSoundCards(hal.getSoundCards());
 
         StringBuilder output = new StringBuilder();
         for (int i = 0; i < oshi.size(); i++) {
@@ -124,6 +114,7 @@ public class SystemInfoTest {
     }
 
     private static void printOperatingSystem(final OperatingSystem os) {
+
         oshi.add(String.valueOf(os));
         oshi.add("Booted: " + Instant.ofEpochSecond(os.getSystemBootTime()));
         oshi.add("Uptime: " + FormatUtil.formatElapsedSecs(os.getSystemUptime()));
@@ -141,6 +132,7 @@ public class SystemInfoTest {
     }
 
     private static void printMemory(GlobalMemory memory) {
+        System.out.println(memory.getTotal()/1024/1024/1024+" GiB");
         oshi.add("Memory: \n " + memory.toString());
         VirtualMemory vm = memory.getVirtualMemory();
         oshi.add("Swap: \n " + vm.toString());
@@ -259,10 +251,8 @@ public class SystemInfoTest {
     }
 
     private static void printDisks(HWDiskStore[] diskStores) {
-        oshi.add("Disks:");
         for (HWDiskStore disk : diskStores) {
             oshi.add(" " + disk.toString());
-
             HWPartition[] partitions = disk.getPartitions();
             for (HWPartition part : partitions) {
                 oshi.add(" |-- " + part.toString());
@@ -299,7 +289,24 @@ public class SystemInfoTest {
             sb.append(" Unknown");
         }
         for (NetworkIF net : networkIFs) {
-            sb.append("\n ").append(net.toString());
+            System.out.println(net.getIPv4addr().length + " : "+Arrays.toString(net.getIPv4addr()) );
+            if (net.getIPv4addr().length<1){
+                continue;
+            }
+            try {
+                long download1 = net.getBytesRecv();
+                long timestamp1 = net.getTimeStamp();
+                Thread.sleep(2000); //Sleep for a bit longer, 2s should cover almost every possible problem
+                net.updateAttributes(); //Updating network stats
+                long download2 = net.getBytesRecv();
+                long timestamp2 = net.getTimeStamp();
+                System.out.println("prova " + (download2 - download1)/(timestamp2 - timestamp1));
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+
+//            sb.append("\n ").append(net.toString());
         }
         oshi.add(sb.toString());
     }

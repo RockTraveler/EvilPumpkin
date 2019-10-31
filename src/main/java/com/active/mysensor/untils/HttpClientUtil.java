@@ -2,9 +2,12 @@ package com.active.mysensor.untils;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.fluent.Request;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -33,7 +36,15 @@ public class HttpClientUtil {
 
    private static HttpClientContext context = HttpClientContext.create();
 
+   public static HttpResponse get(String url) throws ClientProtocolException, IOException {
 
+
+      Request request = Request.Get(url);
+      HttpResponse response = request.execute().returnResponse();
+
+
+      return response;
+   }
 
 
    public static String doPost(String url, Map<String, String> param) {
@@ -69,8 +80,7 @@ public class HttpClientUtil {
 
 
 
-   public static void main(String[] args) {
-
+   public static void main(String[] args) throws Exception {
 
    }
 
