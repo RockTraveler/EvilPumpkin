@@ -38,7 +38,7 @@ public class InfoUtils {
         OperatingSystem os = si.getOperatingSystem();
         StringBuffer sb = new StringBuffer();
 
-        // Part 1: Show the base information for your devices.
+        // Part: Show the base information for your devices.
 
 
         sb.append("***").append(NEW_LINE);
@@ -53,10 +53,28 @@ public class InfoUtils {
         sb.append(H5).append(get("availableMemory")).append(COLON).append(getAvailableMemory(hardware.getMemory())).append(NEW_LINE);
         sb.append(H5).append(get("cpuTemperature")).append(COLON).append(getCpuTemperture(hardware.getSensors())).append(NEW_LINE);
         sb.append(H5).append(get("fanSpeed")).append(COLON).append(getFanSpeed(hardware.getSensors())).append(NEW_LINE);
-//        sb.append(H5).append(get("cpuVoltage")).append(COLON).append(getCpuVoltage(hardware.getSensors())).append(NEW_LINE);
         sb.append(H5).append(get("networkTraffic")).append(COLON).append(getNetworkTraffic(hardware.getNetworkIFs())).append(NEW_LINE);
         sb.append(H5).append(get("mark")).append(COLON).append(BOLD).append(getMark()).append(BOLD).append(NEW_LINE);
         sb.append("***").append(NEW_LINE);
+
+
+
+
+
+
+        //Part : Operation System.
+        sb.append(H4).append(BOLD).append(get("osInfo")).append(BOLD).append(NEW_LINE);
+        sb.append(H5).append(get("osVersion")).append(COLON).append(os.toString()).append(NEW_LINE);
+        sb.append("***").append(NEW_LINE);
+
+        // Hardware part
+        sb.append(H4).append(BOLD).append(get("hardware")).append(BOLD).append(NEW_LINE);
+        sb.append(H5).append(get("processor")).append(COLON).append(hardware.getProcessor().getName()).append(NEW_LINE);
+        sb.append(H5).append(get("processorPackage")).append(COLON).append(hardware.getProcessor().getPhysicalPackageCount()).append(NEW_LINE);
+        sb.append(H5).append(get("processorCore")).append(COLON).append(hardware.getProcessor().getPhysicalProcessorCount()).append(NEW_LINE);
+        sb.append(H5).append(get("processorLogical")).append(COLON).append(hardware.getProcessor().getLogicalProcessorCount()).append(NEW_LINE);
+        sb.append("***").append(NEW_LINE);
+
 
         System.out.println(sb.toString());
 
@@ -65,9 +83,11 @@ public class InfoUtils {
 
     public static void main(String[] args) throws Exception {
 
-        System.out.println(System.currentTimeMillis());
-        System.out.println(new Date().getTime());
-        System.out.println(timeStamp2Date(String.valueOf(System.currentTimeMillis()),null));
+        Map<String, String> map = new HashMap<>();
+        map.put("text", InfoUtils.get("currentStatus") + ": " + InfoUtils.getHostname());
+        map.put("desp", InfoUtils.getDeviceInfo());
+
+        HttpClientUtil.doPost("https://sc.ftqq.com/SCU48981T4fb6e368a395cf49b26f8bec99fe6cbf5cb93aed4ba36.send", map);
 
     }
 

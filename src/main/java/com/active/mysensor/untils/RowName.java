@@ -9,7 +9,7 @@ public class RowName {
     private static final List<String> currentStatus = new ArrayList<>(Arrays.asList("当前状态","Current Status"));
 
 
-    // Part 1: Base information.
+    // Part : Base information.
     private static final List<String> baseInfo = new ArrayList<>(Arrays.asList("**基本信息**","**Base Information**"));
     private static final List<String> hostname = new ArrayList<>(Arrays.asList("主机名称","Hostname"));
     private static final List<String> internetIP = new ArrayList<>(Arrays.asList("外网IP","Internet IP"));
@@ -27,7 +27,17 @@ public class RowName {
 
 
 
+    // Operation System Part
 
+    private static final List<String> osInfo = new ArrayList<>(Arrays.asList("系统信息","OS Info"));
+    private static final List<String> osVersion = new ArrayList<>(Arrays.asList("系统版本","OS Version"));
+
+    //Hardware
+    private static final List<String> hardware = new ArrayList<>(Arrays.asList("硬件信息","Hardware"));
+    private static final List<String> processor = new ArrayList<>(Arrays.asList("处理器","Processor"));
+    private static final List<String> processorPackage = new ArrayList<>(Arrays.asList("处理器封装数","Processor Package"));
+    private static final List<String> processorCore = new ArrayList<>(Arrays.asList("处理器核心数","Processor Core"));
+    private static final List<String> processorLogical = new ArrayList<>(Arrays.asList("逻辑处理器数","Logical Processor"));
 
 
 
