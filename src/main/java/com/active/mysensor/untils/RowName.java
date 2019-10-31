@@ -18,7 +18,7 @@ public class RowName {
     private static final List<String> osUptime = new ArrayList<>(Arrays.asList("运行时间","OS  Uptime"));
     private static final List<String> cpuLoad = new ArrayList<>(Arrays.asList("处理器负载","Cpu Load"));
     private static final List<String> availableMemory = new ArrayList<>(Arrays.asList("可用内存","Available Memory"));
-    private static final List<String> cpuTemperature = new ArrayList<>(Arrays.asList("CPU温度","CPU temperature"));
+    private static final List<String> cpuTemperature = new ArrayList<>(Arrays.asList("CPU温度","CPU Temperature"));
     private static final List<String> fanSpeed = new ArrayList<>(Arrays.asList("风扇转速","Fan Speed"));
     private static final List<String> cpuVoltage = new ArrayList<>(Arrays.asList("CPU电压","CPU Voltage"));
     private static final List<String> mark = new ArrayList<>(Arrays.asList("标记","Mark"));
