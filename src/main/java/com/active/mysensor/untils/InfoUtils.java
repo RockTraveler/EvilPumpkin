@@ -29,7 +29,7 @@ public class InfoUtils {
     private static final String H5="#####";
     private static final String BOLD="**";
 
-    private static String getDeviceInfo() {
+    public static String getDeviceInfo() {
 
 
         // Prepare to getater the information.
@@ -46,29 +46,28 @@ public class InfoUtils {
         sb.append(H5).append(get("hostname")).append(COLON).append(getHostname()).append(NEW_LINE);
         sb.append(H5).append(get("internetIP")).append(COLON).append(getInternetIP()).append(NEW_LINE);
         sb.append(H5).append(get("osName")).append(COLON).append(System.getProperty("os.name")).append(NEW_LINE);
+        sb.append(H5).append(get("sysTime")).append(COLON).append(getFormatDate(new Date())).append(NEW_LINE);
         sb.append(H5).append(get("osBootTime")).append(COLON).append(timeStamp2Date(String.valueOf(os.getSystemBootTime()), null)).append(NEW_LINE);
         sb.append(H5).append(get("osUptime")).append(COLON).append(FormatUtil.formatElapsedSecs(os.getSystemUptime())).append(NEW_LINE);
         sb.append(H5).append(get("cpuLoad")).append(COLON).append(getProcessLoad(hardware.getProcessor())).append(NEW_LINE);
         sb.append(H5).append(get("availableMemory")).append(COLON).append(getAvailableMemory(hardware.getMemory())).append(NEW_LINE);
         sb.append(H5).append(get("cpuTemperature")).append(COLON).append(getCpuTemperture(hardware.getSensors())).append(NEW_LINE);
         sb.append(H5).append(get("fanSpeed")).append(COLON).append(getFanSpeed(hardware.getSensors())).append(NEW_LINE);
-        sb.append(H5).append(get("cpuVoltage")).append(COLON).append(getCpuVoltage(hardware.getSensors())).append(NEW_LINE);
+//        sb.append(H5).append(get("cpuVoltage")).append(COLON).append(getCpuVoltage(hardware.getSensors())).append(NEW_LINE);
         sb.append(H5).append(get("networkTraffic")).append(COLON).append(getNetworkTraffic(hardware.getNetworkIFs())).append(NEW_LINE);
         sb.append(H5).append(get("mark")).append(COLON).append(BOLD).append(getMark()).append(BOLD).append(NEW_LINE);
         sb.append("***").append(NEW_LINE);
 
-//        System.out.println(sb.toString());
+        System.out.println(sb.toString());
 
         return sb.toString();
     }
 
     public static void main(String[] args) throws Exception {
-        Map<String, String> map = new HashMap<>();
-        map.put("text", get("currentStatus") + ": " + getHostname());
-        map.put("desp", getDeviceInfo());
 
-        HttpClientUtil.doPost("https://sc.ftqq.com/SCU48981T4fb6e368a395cf49b26f8bec99fe6cbf5cb93aed4ba36.send", map);
-
+        System.out.println(System.currentTimeMillis());
+        System.out.println(new Date().getTime());
+        System.out.println(timeStamp2Date(String.valueOf(System.currentTimeMillis()),null));
 
     }
 
@@ -97,7 +96,7 @@ public class InfoUtils {
 //    }
 
 
-    private static String getHostname() {
+    public static String getHostname() {
         String hostname = "unknown host";
         try {
             InetAddress addr = InetAddress.getLocalHost();
@@ -109,7 +108,7 @@ public class InfoUtils {
     }
 
 
-    private static String get(String name) {
+    public static String get(String name) {
 
         try {
             Field field = RowName.class.getDeclaredField(name);
@@ -122,7 +121,7 @@ public class InfoUtils {
     }
 
     private static Integer getLanguage() {
-        int languageSetting = 1;
+        int languageSetting = 0;
         try {
             languageSetting = Integer.parseInt(getPropertiesValue("language"));
         } catch (Exception e) {
@@ -152,6 +151,7 @@ public class InfoUtils {
 //            prop.load(in);
             BufferedReader bf = new BufferedReader(new InputStreamReader(in, "UTF-8"));
             prop.load(bf);
+            System.out.println("\n\n\n->>>>>>>>>>>>>>\n\n\n\n"+prop.getProperty(propertyName));
             return prop.getProperty(propertyName);
 
         } catch (Exception e) {
@@ -210,8 +210,11 @@ public class InfoUtils {
             sb.append(memory.getAvailable()/1024/1024).append(" MB").append("/");
             sb.append(memory.getTotal()/1024/1024).append(" MB");
         }else{
-            sb.append(memory.getAvailable()/1024/1024/1024).append(" GiB").append("/");
-            sb.append(memory.getTotal()/1024/1024/1024).append(" GiB");
+            System.out.println(memory.getTotal());
+            double available = memory.getAvailable();
+            sb.append(String.format("%.2f",available/1024/1024/1024 )).append(" GiB").append("/");
+            double total=memory.getTotal();
+            sb.append(String.format("%.2f",total/1024/1024/1024 )).append(" GiB");
         }
         return sb.toString();
 
@@ -219,7 +222,7 @@ public class InfoUtils {
 
     private static String getCpuTemperture(Sensors sensors){
         if (sensors.getCpuTemperature()<0.1||sensors.getCpuTemperature()==0){
-            return get("temperatureIPException");
+            return get("temperatureException");
         }else{
             return String.format(String.format("%.2f", sensors.getCpuTemperature()))+"℃";
         }
@@ -232,6 +235,9 @@ public class InfoUtils {
             }else{
                 sb.append(speed).append(" / ");
             }
+        }
+        if (sb.length()<4){
+            return get("fanSpeedException");
         }
         String fanSpeed=sb.substring(0,sb.length()-2);
        return fanSpeed ;
@@ -263,7 +269,7 @@ public class InfoUtils {
             sb.append(" Unknown");
         }
         for (NetworkIF net : networkIFs) {
-//            System.out.println(net.getIPv4addr().length + " : "+Arrays.toString(net.getIPv4addr()) );
+           System.out.println(net.getIPv4addr().length + " : "+Arrays.toString(net.getIPv4addr()) );
             if (net.getIPv4addr().length<1){
                 continue;
             }
@@ -295,4 +301,11 @@ public class InfoUtils {
         return trafficResult;
     }
      // return String.format(String.format("%.2f", sensors.getCpuTemperature()))+"℃";
+
+    private static String getFormatDate(Date date){
+        SimpleDateFormat sdf = new SimpleDateFormat();// 格式化时间
+        sdf.applyPattern("yyyy-MM-dd HH:mm:ss");// a为am/pm的标记
+        return sdf.format(date);
+    }
+
 }

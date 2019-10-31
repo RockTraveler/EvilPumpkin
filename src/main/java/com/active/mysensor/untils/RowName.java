@@ -14,6 +14,7 @@ public class RowName {
     private static final List<String> hostname = new ArrayList<>(Arrays.asList("主机名称","Hostname"));
     private static final List<String> internetIP = new ArrayList<>(Arrays.asList("外网IP","Internet IP"));
     private static final List<String> osName = new ArrayList<>(Arrays.asList("操作系统","OS"));
+    private static final List<String> sysTime = new ArrayList<>(Arrays.asList("系统时间","System Time"));
     private static final List<String> osBootTime = new ArrayList<>(Arrays.asList("启动时间","OS Boot Time"));
     private static final List<String> osUptime = new ArrayList<>(Arrays.asList("运行时间","OS  Uptime"));
     private static final List<String> cpuLoad = new ArrayList<>(Arrays.asList("处理器负载","Cpu Load"));
@@ -34,7 +35,7 @@ public class RowName {
 
     //External Part: Exception Part
     private static final List<String> internetIPException = new ArrayList<>(Arrays.asList("获取IP失败","Get Internet IP failed"));
-    private static final List<String> temperatureException = new ArrayList<>(Arrays.asList("获取CPU温度失败","Get temperature IP failed"));
+    private static final List<String> temperatureException = new ArrayList<>(Arrays.asList("获取CPU温度失败","Get temperature failed"));
     private static final List<String> fanSpeedException = new ArrayList<>(Arrays.asList("获取风扇转速失败","Get fan speed failed"));
     private static final List<String> cpuVoltageException = new ArrayList<>(Arrays.asList("获取CPU电压失败","Get cpu voltage failed"));
     private static final List<String> markException = new ArrayList<>(Arrays.asList("无标记","Mark doesn't existed."));
