@@ -22,7 +22,7 @@ public class RowName {
     private static final List<String> fanSpeed = new ArrayList<>(Arrays.asList("风扇转速","Fan Speed"));
     private static final List<String> cpuVoltage = new ArrayList<>(Arrays.asList("CPU电压","CPU Voltage"));
     private static final List<String> mark = new ArrayList<>(Arrays.asList("标记","Mark"));
-    private static final List<String> networkTraffic = new ArrayList<>(Arrays.asList("网络流量","Network Traffice"));
+    private static final List<String> networkTraffic = new ArrayList<>(Arrays.asList("网络流量","Network Traffic"));
 
 
 
