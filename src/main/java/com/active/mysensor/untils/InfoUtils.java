@@ -5,15 +5,13 @@ import org.springframework.core.io.ResourceLoader;
 import oshi.SystemInfo;
 import oshi.hardware.HardwareAbstractionLayer;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.lang.reflect.Field;
+import java.net.HttpURLConnection;
 import java.net.InetAddress;
-import java.util.HashMap;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 public class InfoUtils {
@@ -38,15 +36,42 @@ public class InfoUtils {
         return sb.toString();
     }
 
-    public static void main(String[] args) {
-        Map<String, String> map = new HashMap<>();
-        map.put("text", get("currentStatus")+ ": "+ getHostname());
-        map.put("desp", getDeviceInfo());
+    public static void main(String[] args)throws Exception {
+//        Map<String, String> map = new HashMap<>();
+//        map.put("text", get("currentStatus")+ ": "+ getHostname());
+//        map.put("desp", getDeviceInfo());
+//
+//        HttpClientUtil.doPost("https://sc.ftqq.com/SCU48981T4fb6e368a395cf49b26f8bec99fe6cbf5cb93aed4ba36.send",map);
 
-        HttpClientUtil.doPost("https://sc.ftqq.com/SCU48981T4fb6e368a395cf49b26f8bec99fe6cbf5cb93aed4ba36.send",map);
+
+            getMyIP();
+
+
     }
 
-
+    private static String getMyIP() throws IOException {
+        InputStream ins = null;
+        try {
+            //https://ip.ngrok.wang/
+            URL url = new URL("http://ip.cn");
+            URLConnection con = url.openConnection();
+            ins = con.getInputStream();
+            InputStreamReader isReader = new InputStreamReader(ins, "utf-8");
+            BufferedReader bReader = new BufferedReader(isReader);
+            StringBuffer webContent = new StringBuffer();
+            String str = null;
+            while ((str = bReader.readLine()) != null) {
+                webContent.append(str);
+            }
+            int start = webContent.indexOf("<code>")+6 ;
+            int end = webContent.indexOf("</code");
+            return webContent.substring(start, end);
+        } finally {
+            if (ins != null) {
+                ins.close();
+            }
+        }
+    }
 
 
     private static String getHostname(){
