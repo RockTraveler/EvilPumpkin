@@ -20,15 +20,15 @@ public class MysensorApplication {
 
 //		SystemInfoTest.test();
 
-//		Map<String, String> map = new HashMap<>();
-//		map.put("text", InfoUtils.get("currentStatus") + ": " + InfoUtils.getHostname());
-//		map.put("desp", InfoUtils.getDeviceInfo());
-//
-//		HttpClientUtil.doPost("https://sc.ftqq.com/SCU48981T4fb6e368a395cf49b26f8bec99fe6cbf5cb93aed4ba36.send", map);
+		Map<String, String> map = new HashMap<>();
+		map.put("text", InfoUtils.get("currentStatus") + ": " + InfoUtils.getHostname());
+		map.put("desp", InfoUtils.getDeviceInfo());
+
+		HttpClientUtil.doPost("https://sc.ftqq.com/SCU48981T4fb6e368a395cf49b26f8bec99fe6cbf5cb93aed4ba36.send", map);
 
 		SpringApplication.run(MysensorApplication.class, args);
 
-			test();
+
 	}
 
 

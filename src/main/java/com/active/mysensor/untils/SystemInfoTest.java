@@ -56,11 +56,11 @@ public class SystemInfoTest {
 //        printOperatingSystem(os);
 //
 //
-//        logger.info("Checking computer system...");
-//        printComputerSystem(hal.getComputerSystem());
+        logger.info("Checking computer system...");
+        printComputerSystem(hal.getComputerSystem());
 ////
-            logger.info("Checking Processor...");
-            printProcessor(hal.getProcessor());
+//            logger.info("Checking Processor...");
+//            printProcessor(hal.getProcessor());
 //
 //        logger.info("Checking Memory...");
 //        printMemory(hal.getMemory());
@@ -83,11 +83,11 @@ public class SystemInfoTest {
 //        logger.info("Checking Disks...");
 //        printDisks(hal.getDiskStores());
 
-//        logger.info("Checking File System...");
-//        printFileSystem(os.getFileSystem());
+//            logger.info("Checking File System...");
+//            printFileSystem(os.getFileSystem());
 //
-//        logger.info("Checking Network interfaces...");
-//        printNetworkInterfaces(hal.getNetworkIFs());
+        logger.info("Checking Network interfaces...");
+        printNetworkInterfaces(hal.getNetworkIFs());
 //
 //        logger.info("Checking Network parameters...");
 //        printNetworkParameters(os.getNetworkParams());
@@ -96,7 +96,6 @@ public class SystemInfoTest {
 //        logger.info("Checking Displays...");
 //        printDisplays(hal.getDisplays());
 //
-        // hardware: USB devices
 //        logger.info("Checking USB Devices...");
 //        printUsbDevices(hal.getUsbDevices(true));
 //
@@ -257,8 +256,8 @@ public class SystemInfoTest {
 
     private static void printDisks(HWDiskStore[] diskStores) {
         for (HWDiskStore disk : diskStores) {
-            System.out.println(disk.toString());
-            System.out.println(disk.getModel() + "/ "+FormatUtil.formatBytesDecimal(disk.getSize()));
+//            System.out.println(disk.toString());
+//            System.out.println(disk.getModel() + "/ "+FormatUtil.formatBytesDecimal(disk.getSize()));
             HWPartition[] partitions = disk.getPartitions();
             for (HWPartition part : partitions) {
                 oshi.add(" |-- " + part.toString());
@@ -295,21 +294,22 @@ public class SystemInfoTest {
             sb.append(" Unknown");
         }
         for (NetworkIF net : networkIFs) {
-            System.out.println(net.getIPv4addr().length + " : "+Arrays.toString(net.getIPv4addr()) );
-            if (net.getIPv4addr().length<1){
-                continue;
-            }
-            try {
-                long download1 = net.getBytesRecv();
-                long timestamp1 = net.getTimeStamp();
-                Thread.sleep(2000); //Sleep for a bit longer, 2s should cover almost every possible problem
-                net.updateAttributes(); //Updating network stats
-                long download2 = net.getBytesRecv();
-                long timestamp2 = net.getTimeStamp();
-                System.out.println("prova " + (download2 - download1)/(timestamp2 - timestamp1));
-            }catch (Exception e){
-                e.printStackTrace();
-            }
+            System.out.println(net.toString());
+//            System.out.println(net.getIPv4addr().length + " : "+Arrays.toString(net.getIPv4addr()) );
+//            if (net.getIPv4addr().length<1){
+//                continue;
+//            }
+//            try {
+//                long download1 = net.getBytesRecv();
+//                long timestamp1 = net.getTimeStamp();
+//                Thread.sleep(2000); //Sleep for a bit longer, 2s should cover almost every possible problem
+//                net.updateAttributes(); //Updating network stats
+//                long download2 = net.getBytesRecv();
+//                long timestamp2 = net.getTimeStamp();
+//                System.out.println("prova " + (download2 - download1)/(timestamp2 - timestamp1));
+//            }catch (Exception e){
+//                e.printStackTrace();
+//            }
 
 
 //            sb.append("\n ").append(net.toString());
