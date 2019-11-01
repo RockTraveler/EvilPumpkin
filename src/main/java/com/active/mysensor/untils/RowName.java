@@ -51,7 +51,7 @@ public class RowName {
     private static final List<String> physicalMemoryCount = new ArrayList<>(Arrays.asList("物理内存数", "Physical Memory Count"));
     private static final List<String> physicalMemorySize = new ArrayList<>(Arrays.asList("物理内存容量", "Physical Memory Capacity"));
     private static final List<String> physicalMemoryBankLabel = new ArrayList<>(Arrays.asList("物理内存插槽", "Memory Bank Label"));
-    private static final List<String> physicalMemoryColockSpeed = new ArrayList<>(Arrays.asList("物理内存速率", "Physical Memory Speed"));
+    private static final List<String> physicalMemoryClockSpeed = new ArrayList<>(Arrays.asList("物理内存速率", "Physical Memory Speed"));
     private static final List<String> physicalMemoryType = new ArrayList<>(Arrays.asList("物理内存类型", "Physical Memory Type"));
     private static final List<String> physicalMemoryManufacturer = new ArrayList<>(Arrays.asList("厂商", "Manufacturer"));
 
@@ -62,8 +62,12 @@ public class RowName {
 
     //Network Interface
     private static final List<String> networkInterface = new ArrayList<>(Arrays.asList("网络接口", "Network Interface"));
+    private static final List<String> interfaceName = new ArrayList<>(Arrays.asList("接口名称", "Interface Name"));
     private static final List<String> IPv4Addr = new ArrayList<>(Arrays.asList("IPv4 地址", "IPv4 Address"));
-    private static final List<String> IPv6Addr = new ArrayList<>(Arrays.asList("IPv4 地址", "IPv4 Address"));
+    private static final List<String> IPv6Addr = new ArrayList<>(Arrays.asList("IPv6 地址", "IPv6 Address"));
+    private static final List<String> dns = new ArrayList<>(Arrays.asList("DNS", "DNS"));
+    private static final List<String> IPv4Gateway = new ArrayList<>(Arrays.asList("IPv4 网关", "IPv4 Gateway"));
+    private static final List<String> IPv6Gateway = new ArrayList<>(Arrays.asList("IPv6 网关", "IPv6 Gateway"));
 
     /**
      * File System
@@ -93,7 +97,7 @@ public class RowName {
     private static final List<String> fanSpeedException = new ArrayList<>(Arrays.asList("获取风扇转速失败", "Get fan speed failed"));
     private static final List<String> cpuVoltageException = new ArrayList<>(Arrays.asList("获取CPU电压失败", "Get cpu voltage failed"));
     private static final List<String> markException = new ArrayList<>(Arrays.asList("无标记", "Mark doesn't existed."));
-    private static final List<String> networkTrafficeException = new ArrayList<>(Arrays.asList("未获取到流量", "Network Traffic can't be read"));
-    private static final List<String> networkInterfac3Exception = new ArrayList<>(Arrays.asList("无网络接口", "Network Interface not found"));
+    private static final List<String> networkTrafficException = new ArrayList<>(Arrays.asList("未获取到流量", "Network Traffic can't be read"));
+    private static final List<String> networkInterfaceException = new ArrayList<>(Arrays.asList("无网络接口", "Network Interface not found"));
 
 }

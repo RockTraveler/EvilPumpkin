@@ -51,13 +51,13 @@ public class SystemInfoTest {
 
         HardwareAbstractionLayer hal = si.getHardware();
         OperatingSystem os = si.getOperatingSystem();
-//
+
 //        System.out.println("OS:"+System.getProperty("os.name"));
 //        printOperatingSystem(os);
 //
 //
-        logger.info("Checking computer system...");
-        printComputerSystem(hal.getComputerSystem());
+//        logger.info("Checking computer system...");
+//        printComputerSystem(hal.getComputerSystem());
 ////
 //            logger.info("Checking Processor...");
 //            printProcessor(hal.getProcessor());
@@ -79,18 +79,18 @@ public class SystemInfoTest {
 //
 //        logger.info("Checking Power sources...");
 //        printPowerSources(hal.getPowerSources());
-
+//
 //        logger.info("Checking Disks...");
 //        printDisks(hal.getDiskStores());
-
+//
 //            logger.info("Checking File System...");
 //            printFileSystem(os.getFileSystem());
 //
-        logger.info("Checking Network interfaces...");
-        printNetworkInterfaces(hal.getNetworkIFs());
+//        logger.info("Checking Network interfaces...");
+//        printNetworkInterfaces(hal.getNetworkIFs());
 //
-//        logger.info("Checking Network parameters...");
-//        printNetworkParameters(os.getNetworkParams());
+        logger.info("Checking Network parameters...");
+        printNetworkParameters(os.getNetworkParams());
 //
 //        // hardware: displays
 //        logger.info("Checking Displays...");
@@ -318,6 +318,7 @@ public class SystemInfoTest {
     }
 
     private static void printNetworkParameters(NetworkParams networkParams) {
+//        networkParams.get
         oshi.add("Network parameters:\n " + networkParams.toString());
     }
 

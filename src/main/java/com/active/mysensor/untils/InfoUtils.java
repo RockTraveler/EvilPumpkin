@@ -8,6 +8,7 @@ import org.springframework.util.StringUtils;
 import oshi.SystemInfo;
 import oshi.hardware.*;
 import oshi.software.os.FileSystem;
+import oshi.software.os.NetworkParams;
 import oshi.software.os.OSFileStore;
 import oshi.software.os.OperatingSystem;
 import oshi.util.FormatUtil;
@@ -15,7 +16,9 @@ import oshi.util.Util;
 
 import java.io.*;
 import java.lang.reflect.Field;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -85,7 +88,7 @@ public class InfoUtils {
         sb.append(BOLD).append(get("memory")).append(BOLD).append(ENTER);
         sb.append(H5).append(get("memoryTotalSize")).append(COLON).append(getMemorySize(hardware.getMemory().getTotal())).append(ENTER);
         sb.append(H5).append(get("physicalMemoryCount")).append(COLON).append(hardware.getMemory().getPhysicalMemory().length).append(ENTER);
-        sb.append(getPhysicalMemeory(hardware.getMemory())).append(ENTER).append(ENTER);
+        sb.append(getPhysicalMemory(hardware.getMemory())).append(ENTER).append(ENTER);
         sb.append(LINE).append(ENTER);
 
         //Disk
@@ -97,17 +100,18 @@ public class InfoUtils {
         //Network Interface
         sb.append(BOLD).append(get("networkInterface")).append(BOLD).append(ENTER).append(ENTER);
         sb.append(getNetworkInterface(hardware.getNetworkIFs()));
+        sb.append(getGatewayAndDNS(os.getNetworkParams()));
         sb.append(LINE).append(ENTER);
 
         /**
          *      File System
          */
-        sb.append(H4).append(BOLD).append(get("fileSystem")).append(BOLD).append(ENTER).append(ENTER);
+        sb.append(H4).append(get("fileSystem")).append(ENTER).append(ENTER);
         sb.append(getFileSystem(os.getFileSystem()));
         sb.append(ENTER).append(ENTER);
 
         /**
-         *      Network Traffice Information
+         *      Network Traffic Information
          */
         sb.append(H4).append(BOLD).append(get("networkTrafficInfo")).append(BOLD).append(ENTER).append(ENTER);
 
@@ -124,6 +128,7 @@ public class InfoUtils {
         map.put("desp", InfoUtils.getDeviceInfo());
 
         HttpClientUtil.doPost("https://sc.ftqq.com/SCU48981T4fb6e368a395cf49b26f8bec99fe6cbf5cb93aed4ba36.send", map);
+
 
     }
 
@@ -265,7 +270,6 @@ public class InfoUtils {
             sb.append(memory.getAvailable() / 1024 / 1024).append(" MB").append("/");
             sb.append(memory.getTotal() / 1024 / 1024).append(" MB");
         } else {
-            System.out.println(memory.getTotal());
             double available = memory.getAvailable();
             sb.append(String.format("%.2f", available / 1024 / 1024 / 1024)).append(" GiB").append("/");
             double total = memory.getTotal();
@@ -327,7 +331,6 @@ public class InfoUtils {
             sb.append(" Unknown");
         }
         for (NetworkIF net : networkIFs) {
-            System.out.println(net.getIPv4addr().length + " : " + Arrays.toString(net.getIPv4addr()));
             if (net.getIPv4addr().length < 1) {
                 continue;
             }
@@ -347,11 +350,11 @@ public class InfoUtils {
 
             } catch (Exception e) {
                 e.printStackTrace();
-                return get("networkTrafficeException");
+                return get("networkTrafficException");
             }
 
         }
-        String trafficResult = get("networkTrafficeException");
+        String trafficResult = get("networkTrafficException");
         if (sb.length() > 5) {
             trafficResult = sb.substring(0, sb.length() - 2);
         }
@@ -379,7 +382,7 @@ public class InfoUtils {
     }
 
 
-    private static String getPhysicalMemeory(GlobalMemory memory) {
+    private static String getPhysicalMemory(GlobalMemory memory) {
         StringBuffer pmBuffer = new StringBuffer();
         PhysicalMemory[] pmArray = memory.getPhysicalMemory();
         if (pmArray.length > 0) {
@@ -387,7 +390,7 @@ public class InfoUtils {
             for (PhysicalMemory pm : pmArray) {
                 pmBuffer.append(POINT).append(ENTER).append(H5).append(get("physicalMemorySize")).append(COLON).append(getMemorySize(pm.getCapacity())).append(ENTER);
                 pmBuffer.append(H5).append(get("physicalMemoryBankLabel")).append(COLON).append(pm.getBankLabel()).append(ENTER);
-                pmBuffer.append(H5).append(get("physicalMemoryColockSpeed")).append(COLON).append(FormatUtil.formatHertz(pm.getClockSpeed())).append(ENTER);
+                pmBuffer.append(H5).append(get("physicalMemoryClockSpeed")).append(COLON).append(FormatUtil.formatHertz(pm.getClockSpeed())).append(ENTER);
                 pmBuffer.append(H5).append(get("physicalMemoryType")).append(COLON).append(pm.getMemoryType()).append(ENTER);
                 pmBuffer.append(H5).append(get("physicalMemoryManufacturer")).append(COLON).append(pm.getManufacturer()).append(ENTER);
                 pmBuffer.append(ENTER);
@@ -431,20 +434,34 @@ public class InfoUtils {
     }
 
     private static String getNetworkInterface(NetworkIF[] networkIFs){
-        StringBuilder sb = new StringBuilder();
+        StringBuffer sb = new StringBuffer();
         if (networkIFs.length == 0) {
-            sb.append(H6).append(get("networkInterfac3Exception")).append(ENTER);
+            sb.append(H6).append(get("networkInterfaceException")).append(ENTER);
         }
 
         for (NetworkIF net : networkIFs) {
+
 //            System.out.println(Arrays.toString(net.getIPv4addr()));
             if (net.getIPv4addr().length > 0) {
-                sb.append(ENTER).append(H5).append(get("IPv4Addr")).append(COLON).append(net.getIPv4addr()[0]).append(ENTER);
-            }else if (net.getIPv6addr().length>0){
-                sb.append(ENTER).append(H5).append(get("IPv6Addr")).append(COLON).append(net.getIPv6addr()[0]).append(ENTER);
+                sb.append(POINT).append(ENTER).append(H5).append(get("interfaceName")).append(COLON).append(net.getDisplayName()).append(ENTER);
+                sb.append(H5).append(get("IPv4Addr")).append(COLON).append(net.getIPv4addr()[0]).append(ENTER).append(ENTER);
+            }
+            if (net.getIPv6addr().length>0){
+                sb.append(POINT).append(ENTER).append(H5).append(get("interfaceName")).append(COLON).append(net.getDisplayName()).append(ENTER);
+                sb.append(H5).append(get("IPv6Addr")).append(COLON).append(net.getIPv6addr()[0]).append(ENTER).append(ENTER);
             }
         }
         return sb.toString();
     }
+    private static String getGatewayAndDNS(NetworkParams networkParams){
 
+        StringBuffer sb = new StringBuffer();
+        sb.append(POINT).append(ENTER);
+        for (String dns: networkParams.getDnsServers()){
+            sb.append(H5).append(get("dns")).append(COLON).append(dns).append(ENTER);
+        }
+        sb.append(POINT).append(ENTER).append(H5).append(get("IPv4Gateway")).append(COLON).append(networkParams.getIpv4DefaultGateway()).append(ENTER);
+        sb.append(POINT).append(ENTER).append(H5).append(get("IPv6Gateway")).append(COLON).append(networkParams.getIpv6DefaultGateway()).append(ENTER);
+        return sb.toString();
+    }
 }
