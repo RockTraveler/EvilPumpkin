@@ -322,10 +322,15 @@ public class InfoUtils {
                             }
                             sb.append(H6).append(temp.name.replaceAll("Temp ","")).append(COLON).append(temp.value).append("℃").append(ENTER);
                         }
-
                     }
                 }
             }
+
+            if (sb.toString().equals(ENTER+POINT+ENTER)){
+                sb.append(get("sensorOrVMException")).append(ENTER);
+            }
+
+            testPrint(sb.toString());
             return sb.toString();
         }else if (sensors.getCpuTemperature() < 0.1 || sensors.getCpuTemperature() == 0) {
             return get("temperatureException");
@@ -621,4 +626,7 @@ public class InfoUtils {
         return sb.toString();
     }
 
+    private static void testPrint(String x){
+        System.out.println("\n\n\n\n"+x+"\n\n\n\n");
+    }
 }

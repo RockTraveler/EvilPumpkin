@@ -113,6 +113,7 @@ public class RowName {
     //External Part: Exception Part
     private static final List<String> internetIPException = new ArrayList<>(Arrays.asList("获取IP失败", "Get Internet IP failed"));
     private static final List<String> temperatureException = new ArrayList<>(Arrays.asList("获取CPU温度失败", "Get temperature failed"));
+    private static final List<String> sensorOrVMException = new ArrayList<>(Arrays.asList("无传感器或运行于虚拟机", "No sensor or run on VM"));
     private static final List<String> temperatureAdminException = new ArrayList<>(Arrays.asList("非管理员权限，无法获取温度", "Failed, Please run as Administrator or root."));
     private static final List<String> fanSpeedException = new ArrayList<>(Arrays.asList("获取风扇转速失败", "Get fan speed failed"));
     private static final List<String> cpuVoltageException = new ArrayList<>(Arrays.asList("获取CPU电压失败", "Get cpu voltage failed"));
