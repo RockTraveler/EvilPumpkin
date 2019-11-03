@@ -1,24 +1,24 @@
 package com.active.mysensor.untils;
 
+import com.profesorfalken.jsensors.JSensors;
+import com.profesorfalken.jsensors.model.components.Components;
+import com.profesorfalken.jsensors.model.components.Cpu;
+import com.profesorfalken.jsensors.model.sensors.Temperature;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.util.StringUtils;
+import oshi.PlatformEnum;
 import oshi.SystemInfo;
 import oshi.hardware.*;
-import oshi.software.os.FileSystem;
-import oshi.software.os.NetworkParams;
-import oshi.software.os.OSFileStore;
-import oshi.software.os.OperatingSystem;
+import oshi.software.os.*;
 import oshi.util.FormatUtil;
 import oshi.util.Util;
 
 import java.io.*;
 import java.lang.reflect.Field;
-import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.NetworkInterface;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -27,16 +27,24 @@ public class InfoUtils {
     private static final String MARK = getMark();
     private static final String ENTER = "    \n";
     private static final String COLON = ": ";
-    private static final String H4 = "####";
-    private static final String H5 = "#####";
-    private static final String H6 = "######";
+    private static final String H4 = "#### ";
+    private static final String H5 = "##### ";
+    private static final String H6 = "###### ";
     private static final String BOLD = "**";
     private static final String LINE = "***";
     private static final String POINT = "-";
+    private static final String TAB="|";
+    private static final String LEFT_SORT=" :----- ";
+    private static final String RIGHT_SORT=" :----: ";
+    private static final String CENTER_SORT=" ----: ";
+    private static final String SPACE=" ";
+    private static final String CODE_SPACE_TITLE ="&emsp;&emsp;";
+    private static final String CODE_SPACE_CONTENT ="&emsp;";
+    private static final String CODE_SPACE ="&nbsp;";
     public static String getDeviceInfo() {
 
 
-        // Prepare to getater the information.
+        // Prepare to gather the information.
         SystemInfo si = new SystemInfo();
         HardwareAbstractionLayer hardware = si.getHardware();
         OperatingSystem os = si.getOperatingSystem();
@@ -50,14 +58,14 @@ public class InfoUtils {
         sb.append(LINE).append(ENTER);
         sb.append(H4).append(BOLD).append(get("baseInfo")).append(BOLD).append(ENTER).append(ENTER);
         sb.append(H5).append(get("hostname")).append(COLON).append(getHostname()).append(ENTER);
-        sb.append(H5).append(get("internetIP")).append(COLON).append(getInternetIP()).append(ENTER);
+        sb.append(getInternetIP());
         sb.append(H5).append(get("osName")).append(COLON).append(System.getProperty("os.name")).append(ENTER);
         sb.append(H5).append(get("sysTime")).append(COLON).append(getFormatDate(new Date())).append(ENTER);
         sb.append(H5).append(get("osBootTime")).append(COLON).append(timeStamp2Date(String.valueOf(os.getSystemBootTime()), null)).append(ENTER);
         sb.append(H5).append(get("osUptime")).append(COLON).append(FormatUtil.formatElapsedSecs(os.getSystemUptime())).append(ENTER);
         sb.append(H5).append(get("cpuLoad")).append(COLON).append(getProcessLoad(hardware.getProcessor())).append(ENTER);
         sb.append(H5).append(get("availableMemory")).append(COLON).append(getAvailableMemory(hardware.getMemory())).append(ENTER);
-        sb.append(H5).append(get("cpuTemperature")).append(COLON).append(getCpuTemperture(hardware.getSensors())).append(ENTER);
+        sb.append(H5).append(get("cpuTemperature")).append(COLON).append(getCpuTemperature(hardware.getSensors())).append(ENTER);
         sb.append(H5).append(get("fanSpeed")).append(COLON).append(getFanSpeed(hardware.getSensors())).append(ENTER);
         sb.append(H5).append(get("networkTraffic")).append(COLON).append(getNetworkTraffic(hardware.getNetworkIFs())).append(ENTER);
         sb.append(H5).append(get("mark")).append(COLON).append(BOLD).append(getMark()).append(BOLD).append(ENTER);
@@ -100,15 +108,36 @@ public class InfoUtils {
         //Network Interface
         sb.append(BOLD).append(get("networkInterface")).append(BOLD).append(ENTER).append(ENTER);
         sb.append(getNetworkInterface(hardware.getNetworkIFs()));
+        sb.append(ENTER).append(ENTER).append(LINE).append(ENTER);
+
+
+        /*
+         *  Network Parameters
+         */
+        sb.append(BOLD).append(get("networkParameters")).append(BOLD).append(ENTER).append(ENTER);
         sb.append(getGatewayAndDNS(os.getNetworkParams()));
-        sb.append(LINE).append(ENTER);
+        sb.append(ENTER).append(ENTER).append(LINE).append(ENTER);
+
+
 
         /**
          *      File System
          */
-        sb.append(H4).append(get("fileSystem")).append(ENTER).append(ENTER);
-        sb.append(getFileSystem(os.getFileSystem()));
-        sb.append(ENTER).append(ENTER);
+        sb.append(H4).append(BOLD).append(get("fileSystem")).append(BOLD).append(ENTER).append(ENTER);
+        sb.append(getFileSystem(os.getFileSystem())).append(ENTER);
+        sb.append(LINE).append(ENTER);
+
+
+        /**
+         *     System Processes
+         */
+
+        sb.append(H4).append(BOLD).append(get("systemProcess")).append(BOLD).append(ENTER).append(ENTER).append(ENTER);
+        sb.append(BOLD).append(get("processOrder")).append(BOLD).append(COLON).append(get("cpuUsage")).append(ENTER).append(ENTER).append(ENTER);
+        sb.append(getProcessesText(os,hardware.getMemory(), OperatingSystem.ProcessSort.CPU)).append(ENTER).append(ENTER);
+        sb.append(BOLD).append(get("processOrder")).append(BOLD).append(COLON).append(get("memoryUsage")).append(ENTER).append(ENTER).append(ENTER);
+        sb.append(getProcessesText(os,hardware.getMemory(), OperatingSystem.ProcessSort.MEMORY)).append(ENTER);
+        sb.append(LINE).append(ENTER);
 
         /**
          *      Network Traffic Information
@@ -121,6 +150,7 @@ public class InfoUtils {
         return sb.toString();
     }
 
+
     public static void main(String[] args) throws Exception {
 
         Map<String, String> map = new HashMap<>();
@@ -131,30 +161,6 @@ public class InfoUtils {
 
 
     }
-
-//    private static String getMyIP() throws IOException {
-//        InputStream ins = null;
-//        try {
-//            //https://ip.ngrok.wang/
-//            URL url = new URL("http://ip.cn");
-//            URLConnection con = url.openConnection();
-//            ins = con.getInputStream();
-//            InputStreamReader isReader = new InputStreamReader(ins, "utf-8");
-//            BufferedReader bReader = new BufferedReader(isReader);
-//            StringBuffer webContent = new StringBuffer();
-//            String str = null;
-//            while ((str = bReader.readLine()) != null) {
-//                webContent.append(str);
-//            }
-//            int start = webContent.indexOf("<code>")+6 ;
-//            int end = webContent.indexOf("</code");
-//            return webContent.substring(start, end);
-//        } finally {
-//            if (ins != null) {
-//                ins.close();
-//            }
-//        }
-//    }
 
 
     public static String getHostname() {
@@ -221,10 +227,10 @@ public class InfoUtils {
     }
 
 
-    private static String getInternetIP() {
+    private static String getInternetIP(String url) {
         String ip = get("internetIPException");
         try {
-            HttpResponse response = HttpClientUtil.get("http://whatismyip.akamai.com");
+            HttpResponse response = HttpClientUtil.get(url);
             ip = EntityUtils.toString(response.getEntity(), "utf-8");
             return ip.trim();
         } catch (Exception e) {
@@ -232,6 +238,25 @@ public class InfoUtils {
         }
 
     }
+
+    private static String getInternetIP(){
+        StringBuffer sb = new StringBuffer();
+        String firstIP = getInternetIP("http://whatismyip.akamai.com");
+        String secondIP= getInternetIP("http://myip.ipip.net/");
+        secondIP=secondIP.substring(secondIP.indexOf("IP：")+3,secondIP.indexOf("来自")).trim();
+        if (firstIP.equals(secondIP)){
+            sb.append(H5).append(get("dualWanOrProxy")).append(COLON).append(get("no")).append(ENTER);
+            sb.append(H5).append(get("firstInternetIP")).append(COLON).append(firstIP).append(SPACE).append(get("akamai")).append(ENTER);
+        }else{
+            sb.append(POINT).append(ENTER).append(H6).append(get("dualWanOrProxy")).append(COLON).append(get("yes")).append(ENTER);
+            sb.append(H6).append(get("firstInternetIP")).append(COLON).append(firstIP).append(SPACE).append(get("akamai")).append(ENTER);
+            sb.append(H6).append(get("secondInternetIP")).append(COLON).append(secondIP).append(SPACE).append(get("ipipNet")).append(ENTER).append(ENTER);
+        }
+
+
+        return sb.toString();
+    }
+
 
     public static String timeStamp2Date(String seconds, String format) {
         if (seconds == null || seconds.isEmpty() || seconds.equals("null")) {
@@ -279,10 +304,32 @@ public class InfoUtils {
 
     }
 
-    private static String getCpuTemperture(Sensors sensors) {
-        if (sensors.getCpuTemperature() < 0.1 || sensors.getCpuTemperature() == 0) {
+    private static String getCpuTemperature(Sensors sensors) {
+        StringBuffer sb = new StringBuffer();
+      if(SystemInfo.getCurrentPlatformEnum()==PlatformEnum.WINDOWS){
+
+            Components components = JSensors.get.components();
+            List<Cpu> cpus = components.cpus;
+            if (cpus != null) {
+                sb.append(ENTER).append(POINT).append(ENTER);
+                for (final Cpu cpu : cpus) {
+                    if (cpu.sensors != null) {
+                        List<Temperature> temps = cpu.sensors.temperatures;
+                        for (final Temperature temp : temps) {
+                            if (temp.value<1){
+                                sb.append(H6).append(get("temperatureAdminException")).append(ENTER);
+                                break;
+                            }
+                            sb.append(H6).append(temp.name.replaceAll("Temp ","")).append(COLON).append(temp.value).append("℃").append(ENTER);
+                        }
+
+                    }
+                }
+            }
+            return sb.toString();
+        }else if (sensors.getCpuTemperature() < 0.1 || sensors.getCpuTemperature() == 0) {
             return get("temperatureException");
-        } else {
+        }  else  {
             return String.format(String.format("%.2f", sensors.getCpuTemperature())) + "℃";
         }
     }
@@ -370,16 +417,37 @@ public class InfoUtils {
     }
 
 
-    private static String getMemorySize(long size) {
+    public static String getMemorySize(long size) {
         double dSize = size;
         StringBuffer sizeBuffer = new StringBuffer();
-        if (size < 1048576) {
-            sizeBuffer.append(String.format("%.2f", dSize / 1024 / 1024)).append(" MB");
-        } else {
+
+        if (size>1073741824){
             sizeBuffer.append(String.format("%.2f", dSize / 1024 / 1024 / 1024)).append(" GiB");
+        }else if(size<1073741824&&size>1048576){
+            sizeBuffer.append(String.format("%.2f", dSize / 1024 / 1024)).append(" MB");
+        }else{
+            sizeBuffer.append(String.format("%.2f", dSize / 1024)).append(" KB");
         }
+
         return sizeBuffer.toString();
     }
+
+
+    public static String getMemoryTextSize(long size) {
+        double dSize = size;
+        StringBuffer sizeBuffer = new StringBuffer();
+
+        if (size>1073741824){
+            sizeBuffer.append(String.format("%.1f", dSize / 1024 / 1024 / 1024)).append("G");
+        }else if(size<1073741824&&size>1048576){
+            sizeBuffer.append(String.format("%.1f", dSize / 1024 / 1024)).append("M");
+        }else{
+            sizeBuffer.append(String.format("%.1f", dSize / 1024)).append("K");
+        }
+
+        return sizeBuffer.toString();
+    }
+
 
 
     private static String getPhysicalMemory(GlobalMemory memory) {
@@ -402,6 +470,9 @@ public class InfoUtils {
     private static String getDiskStores(HWDiskStore[] diskStores) {
         StringBuffer diskBuffer = new StringBuffer();
         for (HWDiskStore disk : diskStores) {
+            if (disk.getModel().equals("Unknown")){
+                continue;
+            }
             diskBuffer.append(POINT).append(ENTER).append(H5).append(get("diskName")).append(COLON).append(disk.getModel()).append(ENTER);
             diskBuffer.append(H5).append(get("diskCapacity")).append(COLON).append(FormatUtil.formatBytesDecimal(disk.getSize())).append(ENTER);
         }
@@ -411,16 +482,20 @@ public class InfoUtils {
     private static String getFileSystem(FileSystem fileSystem){
         StringBuffer sb = new StringBuffer();
         OSFileStore[] fsArray = fileSystem.getFileStores();
+
         for (OSFileStore fs : fsArray) {
+            long usedSpace = fs.getTotalSpace()-fs.getFreeSpace();
             sb.append(POINT).append(ENTER).append(H5).append(get("volumeName")).append(COLON).append(fs.getName()).append(ENTER);
-            sb.append(H6).append(get("logicalVolume")).append(COLON).append(fs.getType()).append(ENTER);
-            sb.append(H6).append(get("usedSpace")).append(COLON).append(getMemorySize(fs.getUsableSpace())).append(ENTER);
+            sb.append(H6).append(get("fileSystemType")).append(COLON).append(fs.getType()).append(ENTER);
             sb.append(H6).append(get("totalSpace")).append(COLON).append(getMemorySize(fs.getTotalSpace())).append(ENTER);
-            sb.append(H6).append(get("usedRate")).append(COLON).append(calcPercent(fs.getUsableSpace(),fs.getTotalSpace())).append(ENTER);
-            sb.append(H6).append(get("volume")).append(COLON).append(fs.getVolume()).append(ENTER);
+            sb.append(H6).append(get("usedSpace")).append(COLON).append(getMemorySize(usedSpace)).append(ENTER);
+            sb.append(H6).append(get("freeSpace")).append(COLON).append(getMemorySize(fs.getFreeSpace())).append(ENTER);
+            sb.append(H6).append(get("usedRate")).append(COLON).append(calcPercent(usedSpace,fs.getTotalSpace())).append(ENTER);
+            sb.append(H6).append(get("volume")).append(COLON).append(fs.getVolume().replaceAll("\\?","")).append(ENTER);
             sb.append(H6).append(get("logicalVolume")).append(COLON).append(fs.getLogicalVolume()).append(ENTER);
             sb.append(H6).append(get("mountPoint")).append(COLON).append(fs.getMount()).append(ENTER);
             sb.append(H6).append(get("fsUuid")).append(COLON).append(fs.getUUID()).append(ENTER);
+            sb.append(H6).append(get("fsDescp")).append(COLON).append(fs.getDescription()).append(ENTER);
         }
 
         return sb.toString();
@@ -441,7 +516,6 @@ public class InfoUtils {
 
         for (NetworkIF net : networkIFs) {
 
-//            System.out.println(Arrays.toString(net.getIPv4addr()));
             if (net.getIPv4addr().length > 0) {
                 sb.append(POINT).append(ENTER).append(H5).append(get("interfaceName")).append(COLON).append(net.getDisplayName()).append(ENTER);
                 sb.append(H5).append(get("IPv4Addr")).append(COLON).append(net.getIPv4addr()[0]).append(ENTER).append(ENTER);
@@ -464,4 +538,87 @@ public class InfoUtils {
         sb.append(POINT).append(ENTER).append(H5).append(get("IPv6Gateway")).append(COLON).append(networkParams.getIpv6DefaultGateway()).append(ENTER);
         return sb.toString();
     }
+
+
+
+    private static String getProcessesTab(OperatingSystem os, GlobalMemory memory, OperatingSystem.ProcessSort sort) {
+        StringBuffer sb = new StringBuffer();
+
+        List<OSProcess> procs = Arrays.asList(os.getProcesses(5, OperatingSystem.ProcessSort.CPU));
+        sb.append(TAB).append(" PID ").append(TAB).append(" CPU ").append(TAB).append(" VSZ ").append(TAB).append(" RSS Name ").append(TAB).append(" name ").append(TAB).append(ENTER);
+        sb.append(TAB).append(LEFT_SORT).append(TAB).append(CENTER_SORT).append(TAB).append(RIGHT_SORT).append(TAB).append(LEFT_SORT).append(TAB).append(RIGHT_SORT).append(TAB).append(ENTER);
+
+
+        for (int i = 0; i < procs.size() && i < 5; i++) {
+
+            OSProcess p = procs.get(i);
+            sb.append(TAB).append(SPACE).append(p.getProcessID()).append(SPACE).append(TAB).append(SPACE)
+                    .append(calcPercent((p.getKernelTime() + p.getUserTime()),p.getUpTime())).append(SPACE).append(TAB)
+                    .append(SPACE).append(calcPercent(p.getResidentSetSize(),memory.getTotal())).append(SPACE).append(TAB).append(SPACE)
+                    .append(getMemorySize(p.getResidentSetSize())).append(SPACE).append(TAB)
+                    .append(SPACE).append(p.getName()).append(SPACE).append(TAB).append(ENTER);
+        }
+
+        return sb.toString();
+    }
+
+    private static String getProcessesText(OperatingSystem os, GlobalMemory memory, OperatingSystem.ProcessSort sort) {
+        StringBuffer sb = new StringBuffer();
+        List<OSProcess> procs = Arrays.asList(os.getProcesses(10, sort));
+
+        sb.append(H6).append(" PID ").append(CODE_SPACE_TITLE).append(" CPU ").append(CODE_SPACE_TITLE).append(" MEM ").append(CODE_SPACE_TITLE).append(" VSZ").append(CODE_SPACE_TITLE).append(" RSS ").append(CODE_SPACE_TITLE).append(" Name ").append(CODE_SPACE_TITLE).append(ENTER);
+                for (int i = 0; i < procs.size() && i < 10; i++) {
+
+            OSProcess p = procs.get(i);
+            sb.append(H6)
+                    .append(formatMiddleColumn(String.valueOf(p.getProcessID())))                                           //PID
+                    .append(formatMiddleColumn(calcPercent((p.getKernelTime() + p.getUserTime()),p.getUpTime())))           //CPU
+                    .append(formatMiddleColumn(calcPercent(p.getResidentSetSize(),memory.getTotal())))                      //MEM
+                    .append(formatMiddleColumn(getMemoryTextSize(p.getVirtualSize())))                                      //VSS
+                    .append(formatMiddleColumn(getMemoryTextSize(p.getResidentSetSize())))                                  //RSS
+                    .append(p.getName())                                                                                    //Name
+                    .append(ENTER);
+
+
+        }
+
+        return sb.toString();
+    }
+
+    private static String formatMiddleColumn(String input){
+        StringBuffer sb = new StringBuffer();
+        if (input.length()==7){
+            sb.append(input).append(getSpace(1));
+//                    .append(CODE_SPACE_CONTENT).append(CODE_SPACE_1);
+        }else if(input.length()==6){
+            sb.append(input).append(getSpace(3));
+//                    .append(CODE_SPACE_CONTENT).append(CODE_SPACE_1);
+        }else if (input.length()==5){
+            sb.append(input).append(getSpace(5));
+//                    .append(CODE_SPACE_CONTENT).append(CODE_SPACE_1);
+        }else if (input.length()==4){
+            sb.append(input).append(getSpace(7));
+//                    .append(CODE_SPACE_CONTENT).append(CODE_SPACE_1);
+        }else if (input.length()==3){
+            sb.append(input).append(getSpace(9));
+//                    .append(CODE_SPACE_CONTENT).append(CODE_SPACE_1);
+        }else if (input.length()==2){
+            sb.append(input).append(getSpace(11));
+//                    .append(CODE_SPACE_CONTENT).append(CODE_SPACE_1);
+        }else if (input.length()==1){
+            sb.append(input).append(getSpace(13));
+//                    .append(CODE_SPACE_CONTENT).append(CODE_SPACE_1);
+        }
+
+        return sb.toString();
+    }
+
+    private static String getSpace(int x){
+        StringBuffer sb = new StringBuffer();
+        for (int i=0;i<x;i++){
+            sb.append(CODE_SPACE);
+        }
+        return sb.toString();
+    }
+
 }

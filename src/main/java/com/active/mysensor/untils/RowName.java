@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("all")
 public class RowName {
 
     private static final List<String> currentStatus = new ArrayList<>(Arrays.asList("当前状态", "Current Status"));
@@ -14,7 +15,13 @@ public class RowName {
      */
     private static final List<String> baseInfo = new ArrayList<>(Arrays.asList("**基本信息**", "**Base Information**"));
     private static final List<String> hostname = new ArrayList<>(Arrays.asList("主机名称", "Hostname"));
-    private static final List<String> internetIP = new ArrayList<>(Arrays.asList("外网IP", "Internet IP"));
+    private static final List<String> dualWanOrProxy = new ArrayList<>(Arrays.asList("多WAN或代理检测", "Dual WAN or Proxy"));
+    private static final List<String> firstInternetIP = new ArrayList<>(Arrays.asList("公网IP", "Internet IP"));
+    private static final List<String> secondInternetIP = new ArrayList<>(Arrays.asList("公网IP", "Internet IP"));
+    private static final List<String> yes = new ArrayList<>(Arrays.asList("是", "Yes"));
+    private static final List<String> no = new ArrayList<>(Arrays.asList("否", "No"));
+    private static final List<String> akamai = new ArrayList<>(Arrays.asList("(由Akamai提供数据)", "(Provided by Akamai)"));
+    private static final List<String> ipipNet = new ArrayList<>(Arrays.asList("(由ipip.net提供数据)", "(Provided by ipip.net)"));
     private static final List<String> osName = new ArrayList<>(Arrays.asList("操作系统", "OS"));
     private static final List<String> sysTime = new ArrayList<>(Arrays.asList("系统时间", "System Time"));
     private static final List<String> osBootTime = new ArrayList<>(Arrays.asList("启动时间", "OS Boot Time"));
@@ -65,6 +72,9 @@ public class RowName {
     private static final List<String> interfaceName = new ArrayList<>(Arrays.asList("接口名称", "Interface Name"));
     private static final List<String> IPv4Addr = new ArrayList<>(Arrays.asList("IPv4 地址", "IPv4 Address"));
     private static final List<String> IPv6Addr = new ArrayList<>(Arrays.asList("IPv6 地址", "IPv6 Address"));
+
+    //Network Parameters
+    private static final List<String> networkParameters = new ArrayList<>(Arrays.asList("网络信息", "Network Parameters"));
     private static final List<String> dns = new ArrayList<>(Arrays.asList("DNS", "DNS"));
     private static final List<String> IPv4Gateway = new ArrayList<>(Arrays.asList("IPv4 网关", "IPv4 Gateway"));
     private static final List<String> IPv6Gateway = new ArrayList<>(Arrays.asList("IPv6 网关", "IPv6 Gateway"));
@@ -76,24 +86,34 @@ public class RowName {
     private static final List<String> volumeName = new ArrayList<>(Arrays.asList("卷名", "Volume Name"));
     private static final List<String> fileSystemType = new ArrayList<>(Arrays.asList("文件系统类型", "File System Type"));
     private static final List<String> usedSpace = new ArrayList<>(Arrays.asList("已使用", "Used Space"));
+    private static final List<String> freeSpace = new ArrayList<>(Arrays.asList("剩余", "Free Space"));
     private static final List<String> totalSpace = new ArrayList<>(Arrays.asList("总容量", "Total Space"));
     private static final List<String> usedRate = new ArrayList<>(Arrays.asList("利用率", "Used Rate"));
     private static final List<String> volume = new ArrayList<>(Arrays.asList("卷", "Volume"));
     private static final List<String> logicalVolume = new ArrayList<>(Arrays.asList("逻辑卷", "Logical Volume"));
-    private static final List<String> mountPoint = new ArrayList<>(Arrays.asList("挂载点", "Monnt"));
+    private static final List<String> mountPoint = new ArrayList<>(Arrays.asList("挂载点", "Mount"));
     private static final List<String> fsUuid = new ArrayList<>(Arrays.asList("UUID", "UUID"));
+    private static final List<String> fsDescp = new ArrayList<>(Arrays.asList("描述", "Description"));
 
+    /**
+     * System Processes
+     */
+    private static final List<String> systemProcess = new ArrayList<>(Arrays.asList("系统进程", "System Processes"));
+    private static final List<String> processOrder = new ArrayList<>(Arrays.asList("进程排序", "Order By"));
+    private static final List<String> cpuUsage = new ArrayList<>(Arrays.asList("CPU占用率", "CPU Usage"));
+    private static final List<String> memoryUsage = new ArrayList<>(Arrays.asList("内存占用率", "Memory Usage"));
 
     /**
      * Network
      */
 
-    private static final List<String> networkTrafficInfo = new ArrayList<>(Arrays.asList("网络流量信息", "Network Traffice Information"));
+    private static final List<String> networkTrafficInfo = new ArrayList<>(Arrays.asList("网络流量信息", "Network Traffic Information"));
 
 
     //External Part: Exception Part
     private static final List<String> internetIPException = new ArrayList<>(Arrays.asList("获取IP失败", "Get Internet IP failed"));
     private static final List<String> temperatureException = new ArrayList<>(Arrays.asList("获取CPU温度失败", "Get temperature failed"));
+    private static final List<String> temperatureAdminException = new ArrayList<>(Arrays.asList("非管理员权限，无法获取温度", "Failed, Please run as Administrator or root."));
     private static final List<String> fanSpeedException = new ArrayList<>(Arrays.asList("获取风扇转速失败", "Get fan speed failed"));
     private static final List<String> cpuVoltageException = new ArrayList<>(Arrays.asList("获取CPU电压失败", "Get cpu voltage failed"));
     private static final List<String> markException = new ArrayList<>(Arrays.asList("无标记", "Mark doesn't existed."));

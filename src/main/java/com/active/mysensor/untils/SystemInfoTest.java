@@ -10,9 +10,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import oshi.SystemInfo;
-import oshi.hardware.*;
+import oshi.hardware.CentralProcessor;
 import oshi.hardware.CentralProcessor.TickType;
-import oshi.hardware.platform.mac.MacNetworks;
+import oshi.hardware.ComputerSystem;
+import oshi.hardware.Display;
+import oshi.hardware.GlobalMemory;
+import oshi.hardware.HWDiskStore;
+import oshi.hardware.HWPartition;
+import oshi.hardware.HardwareAbstractionLayer;
+import oshi.hardware.NetworkIF;
+import oshi.hardware.PhysicalMemory;
+import oshi.hardware.PowerSource;
+import oshi.hardware.Sensors;
+import oshi.hardware.SoundCard;
+import oshi.hardware.UsbDevice;
+import oshi.hardware.VirtualMemory;
 import oshi.software.os.FileSystem;
 import oshi.software.os.NetworkParams;
 import oshi.software.os.OSFileStore;
@@ -32,10 +44,6 @@ public class SystemInfoTest {
 
     static List<String> oshi = new ArrayList<>();
 
-    public static void main(String[] args) {
-        test();
-    }
-
     /**
      * Test that this platform is implemented..
      */
@@ -43,34 +51,33 @@ public class SystemInfoTest {
     /**
      * The main method, demonstrating use of classes.
      *
+     * @param args
+     *            the arguments (unused)
      */
-    public static void test() {
-        System.out.println(" ============================ OSHI BEGIN.");
+    public static void main(String[] args) {
         logger.info("Initializing System...");
         SystemInfo si = new SystemInfo();
 
         HardwareAbstractionLayer hal = si.getHardware();
         OperatingSystem os = si.getOperatingSystem();
 
-//        System.out.println("OS:"+System.getProperty("os.name"));
-//        printOperatingSystem(os);
-//
-//
+        printOperatingSystem(os);
+
 //        logger.info("Checking computer system...");
 //        printComputerSystem(hal.getComputerSystem());
-////
-//            logger.info("Checking Processor...");
-//            printProcessor(hal.getProcessor());
+//
+//        logger.info("Checking Processor...");
+//        printProcessor(hal.getProcessor());
 //
 //        logger.info("Checking Memory...");
 //        printMemory(hal.getMemory());
 //
 //        logger.info("Checking CPU...");
 //        printCpu(hal.getProcessor());
-//
-//        logger.info("Checking Processes...");
-//        printProcesses(os, hal.getMemory());
-//
+
+        logger.info("Checking Processes...");
+        printProcesses(os, hal.getMemory());
+
 //        logger.info("Checking Services...");
 //        printServices(os);
 //
@@ -83,19 +90,20 @@ public class SystemInfoTest {
 //        logger.info("Checking Disks...");
 //        printDisks(hal.getDiskStores());
 //
-//            logger.info("Checking File System...");
-//            printFileSystem(os.getFileSystem());
+//        logger.info("Checking File System...");
+//        printFileSystem(os.getFileSystem());
 //
 //        logger.info("Checking Network interfaces...");
 //        printNetworkInterfaces(hal.getNetworkIFs());
 //
-        logger.info("Checking Network parameters...");
-        printNetworkParameters(os.getNetworkParams());
+//        logger.info("Checking Network parameters...");
+//        printNetworkParameters(os.getNetworkParams());
 //
 //        // hardware: displays
 //        logger.info("Checking Displays...");
 //        printDisplays(hal.getDisplays());
 //
+//        // hardware: USB devices
 //        logger.info("Checking USB Devices...");
 //        printUsbDevices(hal.getUsbDevices(true));
 //
@@ -113,12 +121,7 @@ public class SystemInfoTest {
     }
 
     private static void printOperatingSystem(final OperatingSystem os) {
-
         oshi.add(String.valueOf(os));
-        System.out.println(os.getVersionInfo().getBuildNumber());
-        System.out.println(os.getVersionInfo().getCodeName());
-        System.out.println(os.getVersionInfo().getVersion());
-        System.out.println(os.getFamily());
         oshi.add("Booted: " + Instant.ofEpochSecond(os.getSystemBootTime()));
         oshi.add("Uptime: " + FormatUtil.formatElapsedSecs(os.getSystemUptime()));
         oshi.add("Running with" + (os.isElevated() ? "" : "out") + " elevated permissions.");
@@ -131,12 +134,10 @@ public class SystemInfoTest {
     }
 
     private static void printProcessor(CentralProcessor processor) {
-
         oshi.add(processor.toString());
     }
 
     private static void printMemory(GlobalMemory memory) {
-        System.out.println(memory.getTotal()/1024/1024/1024+" GiB");
         oshi.add("Memory: \n " + memory.toString());
         VirtualMemory vm = memory.getVirtualMemory();
         oshi.add("Swap: \n " + vm.toString());
@@ -211,13 +212,17 @@ public class SystemInfoTest {
         // Sort by highest CPU
         List<OSProcess> procs = Arrays.asList(os.getProcesses(5, ProcessSort.CPU));
 
+
         oshi.add("   PID  %CPU %MEM       VSZ       RSS Name");
         for (int i = 0; i < procs.size() && i < 5; i++) {
+
             OSProcess p = procs.get(i);
             oshi.add(String.format(" %5d %5.1f %4.1f %9s %9s %s", p.getProcessID(),
                     100d * (p.getKernelTime() + p.getUserTime()) / p.getUpTime(),
-                    100d * p.getResidentSetSize() / memory.getTotal(), FormatUtil.formatBytes(p.getVirtualSize()),
-                    FormatUtil.formatBytes(p.getResidentSetSize()), p.getName()));
+                    100d * p.getResidentSetSize() / memory.getTotal(),
+                    FormatUtil.formatBytes(p.getVirtualSize()),
+                    FormatUtil.formatBytes(p.getResidentSetSize()),
+                    p.getName()));
         }
     }
 
@@ -255,9 +260,10 @@ public class SystemInfoTest {
     }
 
     private static void printDisks(HWDiskStore[] diskStores) {
+        oshi.add("Disks:");
         for (HWDiskStore disk : diskStores) {
-//            System.out.println(disk.toString());
-//            System.out.println(disk.getModel() + "/ "+FormatUtil.formatBytesDecimal(disk.getSize()));
+            oshi.add(" " + disk.toString());
+
             HWPartition[] partitions = disk.getPartitions();
             for (HWPartition part : partitions) {
                 oshi.add(" |-- " + part.toString());
@@ -294,31 +300,12 @@ public class SystemInfoTest {
             sb.append(" Unknown");
         }
         for (NetworkIF net : networkIFs) {
-            System.out.println(net.toString());
-//            System.out.println(net.getIPv4addr().length + " : "+Arrays.toString(net.getIPv4addr()) );
-//            if (net.getIPv4addr().length<1){
-//                continue;
-//            }
-//            try {
-//                long download1 = net.getBytesRecv();
-//                long timestamp1 = net.getTimeStamp();
-//                Thread.sleep(2000); //Sleep for a bit longer, 2s should cover almost every possible problem
-//                net.updateAttributes(); //Updating network stats
-//                long download2 = net.getBytesRecv();
-//                long timestamp2 = net.getTimeStamp();
-//                System.out.println("prova " + (download2 - download1)/(timestamp2 - timestamp1));
-//            }catch (Exception e){
-//                e.printStackTrace();
-//            }
-
-
-//            sb.append("\n ").append(net.toString());
+            sb.append("\n ").append(net.toString());
         }
         oshi.add(sb.toString());
     }
 
     private static void printNetworkParameters(NetworkParams networkParams) {
-//        networkParams.get
         oshi.add("Network parameters:\n " + networkParams.toString());
     }
 
