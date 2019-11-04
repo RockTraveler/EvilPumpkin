@@ -19,31 +19,34 @@ import java.util.*;
 @EnableScheduling
 public class MysensorApplication {
 	private static final Logger logger = LoggerFactory.getLogger(MysensorApplication.class);
+	private static Map<String,List> networkTrafficeMap = new HashMap<>();
+
 
 	SystemInfo si = new SystemInfo();
 	HardwareAbstractionLayer hardware = si.getHardware();
 	OperatingSystem os = si.getOperatingSystem();
 
-	private static List<Long> downloadSpeed = new ArrayList<>();
+
+
 
 	public static void main(String[] args) {
 
 
-		Map<String, String> map = new HashMap<>();
-		map.put("text", InfoUtils.get("currentStatus") + ": " + InfoUtils.getHostname());
-		map.put("desp", InfoUtils.getDeviceInfo());
-
-		HttpClientUtil.doPost("https://sc.ftqq.com/SCU48981T4fb6e368a395cf49b26f8bec99fe6cbf5cb93aed4ba36.send", map);
+//		Map<String, String> map = new HashMap<>();
+//		map.put("text", InfoUtils.get("currentStatus") + ": " + InfoUtils.getHostname());
+//		map.put("desp", InfoUtils.getDeviceInfo());
+//
+//		HttpClientUtil.doPost("https://sc.ftqq.com/SCU48981T4fb6e368a395cf49b26f8bec99fe6cbf5cb93aed4ba36.send", map);
 
 		SpringApplication.run(MysensorApplication.class, args);
 
 
 	}
-	@Scheduled(cron = "0 */1 * * * ?")
-	public void reportCurrentTime() {
-		logger.info("Recording the network Traffic");
-		recordNetworkTraffic(hardware.getNetworkIFs());
-	}
+//	@Scheduled(cron = "0 */1 * * * ?")
+//	public void reportCurrentTime() {
+//		logger.info("Recording the network Traffic");
+//		recordNetworkTraffic(hardware.getNetworkIFs());
+//	}
 
 
 
@@ -57,14 +60,17 @@ public class MysensorApplication {
 				continue;
 			}
 			try {
+				List<Long> downloadPackage = getDownloadHistoryByInterfaceName(net.getDisplayName());
+				System.out.println(net.getName());
 				long currentDownload=net.getBytesRecv();
 				long lastDownload=0;
-				if (downloadSpeed.size()>0){
-					lastDownload=downloadSpeed.get(downloadSpeed.size()-1);
+				if (downloadPackage.size()>0){
+					lastDownload=downloadPackage.get(downloadPackage.size()-1);
 //					InfoUtils.getMemorySize(currentDownload-lastDownload);
-					logger.info(InfoUtils.getMemorySize(currentDownload-lastDownload)+" /Min");
+					logger.info(net.getDisplayName()+" : "+InfoUtils.getMemorySize( currentDownload-lastDownload)+" /Min");
 				}
-				downloadSpeed.add(currentDownload);
+				downloadPackage.add(currentDownload);
+				networkTrafficeMap.put(net.getDisplayName(),downloadPackage);
 //				logger.info("Download:"+currentDownload);
 //				logger.info("Upload:"+net.getBytesRecv());
 
@@ -73,6 +79,19 @@ public class MysensorApplication {
 			}
 
 		}
+
+	}
+
+	private static long getLastDownByInterfaceName(String name){
+		List<Long> downloadPackage= networkTrafficeMap.get(name);
+		if (downloadPackage.size()>0){
+			return downloadPackage.get(downloadPackage.size()-1);
+		}
+		return 0;
+	}
+
+	private static List<Long> getDownloadHistoryByInterfaceName(String name){
+		return networkTrafficeMap.get(name);
 
 	}
 

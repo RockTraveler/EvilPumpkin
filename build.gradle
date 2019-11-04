@@ -13,7 +13,8 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter'
+	implementation 'org.springframework.boot:spring-boot-starter',
+					'org.springframework.boot:spring-boot-starter-web'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
@@ -36,6 +37,13 @@ dependencies {
 			'org.apache.httpcomponents:fluent-hc:4.5.10',
 			'com.google.code.gson:gson:2.8.5',
 			'com.alibaba:fastjson:1.2.47',
+			'org.apache.tomcat.embed:tomcat-embed-jasper:9.0.27',
+			'javax.servlet:jstl:1.2',
+			'org.springframework.boot:spring-boot-starter-tomcat:2.2.0.RELEASE',
+			'org.springframework.boot:spring-boot-starter-thymeleaf:2.2.0.RELEASE',
+			'org.webjars:webjars-locator-core:0.42',
+			'org.webjars:jquery:3.4.1',
+			'org.webjars:jquery-i18n-properties:1.10.2'
 
 	)
 }
