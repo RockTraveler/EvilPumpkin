@@ -1088,7 +1088,7 @@
                         "hideMethod": "fadeOut"
                     };
 
-                    toastr.info("You have been awarded with 1 year free subscription. Enjoy it!", "Account Subcription Updated", opts);
+                    // toastr.info("You have been awarded with 1 year free subscription. Enjoy it!", "Account Subcription Updated", opts);
                 }, 3000);
 
                 // Charts

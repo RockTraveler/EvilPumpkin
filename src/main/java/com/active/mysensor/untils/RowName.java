@@ -15,7 +15,7 @@ public class RowName {
      */
     private static final List<String> baseInfo = new ArrayList<>(Arrays.asList("**基本信息**", "**Base Information**"));
     private static final List<String> hostname = new ArrayList<>(Arrays.asList("主机名称", "Hostname"));
-    private static final List<String> dualWanOrProxy = new ArrayList<>(Arrays.asList("多WAN或代理检测", "Dual WAN or Proxy"));
+    private static final List<String> dualWanOrProxy = new ArrayList<>(Arrays.asList("多WAN或代理", "Dual WAN or Proxy"));
     private static final List<String> firstInternetIP = new ArrayList<>(Arrays.asList("公网IP", "Internet IP"));
     private static final List<String> secondInternetIP = new ArrayList<>(Arrays.asList("公网IP", "Internet IP"));
     private static final List<String> yes = new ArrayList<>(Arrays.asList("是", "Yes"));

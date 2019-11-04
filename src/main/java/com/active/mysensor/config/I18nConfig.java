@@ -54,9 +54,6 @@ public class I18nConfig {
         if (!StringUtils.isEmpty(baseFolder)) {
             try {
                 String[] baseNames = getAllBaseNames(baseFolder);
-                for (String name: baseNames){
-                    System.out.println(name);
-                }
                 messageSource.setDefaultEncoding("GBK");
                 messageSource.setBasenames(baseNames);
 
@@ -100,7 +97,6 @@ public class I18nConfig {
             }
         } else {
             String i18Name = getI18FileName(path + folder.getName());
-            System.out.println("\n\n\n"+i18Name);
             if (!basenames.contains(i18Name)) {
                 basenames.add(i18Name);
             }
