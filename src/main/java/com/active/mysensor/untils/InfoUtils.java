@@ -584,7 +584,6 @@ public class InfoUtils {
                     .append(p.getName())                                                                                    //Name
                     .append(ENTER);
 
-
         }
 
         return sb.toString();
