@@ -1,4 +1,4 @@
-package com.active.mysensor.config;
+package com.evil.pumpkin.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -43,6 +43,10 @@ public class I18nConfig {
             //拦截器
             @Override
             public void addInterceptors(InterceptorRegistry registry) {
+
+                LocaleChangeInterceptor interceptor = new LocaleChangeInterceptor();
+                System.out.println(interceptor.getParamName());
+
                 registry.addInterceptor(new LocaleChangeInterceptor()).addPathPatterns("/**");
             }
         };
@@ -54,7 +58,7 @@ public class I18nConfig {
         if (!StringUtils.isEmpty(baseFolder)) {
             try {
                 String[] baseNames = getAllBaseNames(baseFolder);
-                messageSource.setDefaultEncoding("GBK");
+                messageSource.setDefaultEncoding("UTF-8");
                 messageSource.setBasenames(baseNames);
 
             } catch (IOException e) {

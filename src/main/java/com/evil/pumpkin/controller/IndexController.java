@@ -1,4 +1,4 @@
-package com.active.mysensor.controller;
+package com.evil.pumpkin.controller;
 
 
 import org.springframework.stereotype.Controller;

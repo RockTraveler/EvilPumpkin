@@ -1,13 +1,11 @@
-package com.active.mysensor;
+package com.evil.pumpkin;
 
-import com.active.mysensor.untils.HttpClientUtil;
-import com.active.mysensor.untils.InfoUtils;
+import com.evil.pumpkin.untils.InfoUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import oshi.SystemInfo;
 import oshi.hardware.HardwareAbstractionLayer;
 import oshi.hardware.NetworkIF;
@@ -17,8 +15,8 @@ import java.util.*;
 
 @SpringBootApplication
 @EnableScheduling
-public class MysensorApplication {
-	private static final Logger logger = LoggerFactory.getLogger(MysensorApplication.class);
+public class EvilPumpkinApplication {
+	private static final Logger logger = LoggerFactory.getLogger(EvilPumpkinApplication.class);
 	private static Map<String,List> networkTrafficeMap = new HashMap<>();
 
 
@@ -38,7 +36,7 @@ public class MysensorApplication {
 //
 //		HttpClientUtil.doPost("https://sc.ftqq.com/SCU48981T4fb6e368a395cf49b26f8bec99fe6cbf5cb93aed4ba36.send", map);
 
-		SpringApplication.run(MysensorApplication.class, args);
+		SpringApplication.run(EvilPumpkinApplication.class, args);
 
 
 	}

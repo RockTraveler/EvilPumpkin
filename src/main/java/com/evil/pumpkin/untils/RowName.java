@@ -1,4 +1,4 @@
-package com.active.mysensor.untils;
+package com.evil.pumpkin.untils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,6 +8,9 @@ import java.util.List;
 public class RowName {
 
     private static final List<String> currentStatus = new ArrayList<>(Arrays.asList("当前状态", "Current Status"));
+    private static final List<String> dataProvided = new ArrayList<>(Arrays.asList("信息提供", "Data Provided"));
+    private static final List<String> projectName = new ArrayList<>(Arrays.asList("邪恶南瓜", "Evil Pumpkin"));
+
 
 
     /**
