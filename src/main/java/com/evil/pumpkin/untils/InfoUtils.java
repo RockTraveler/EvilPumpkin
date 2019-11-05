@@ -39,7 +39,6 @@ public class InfoUtils {
     private static final String CENTER_SORT=" ----: ";
     private static final String SPACE=" ";
     private static final String CODE_SPACE_TITLE ="&emsp;&emsp;";
-    private static final String CODE_SPACE_CONTENT ="&emsp;";
     private static final String CODE_SPACE ="&nbsp;";
     public static String getDeviceInfo() {
 

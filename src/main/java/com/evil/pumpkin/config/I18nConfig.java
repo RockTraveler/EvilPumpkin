@@ -43,10 +43,7 @@ public class I18nConfig {
             //拦截器
             @Override
             public void addInterceptors(InterceptorRegistry registry) {
-
-                LocaleChangeInterceptor interceptor = new LocaleChangeInterceptor();
-                System.out.println(interceptor.getParamName());
-
+//                LocaleChangeInterceptor interceptor = new LocaleChangeInterceptor();
                 registry.addInterceptor(new LocaleChangeInterceptor()).addPathPatterns("/**");
             }
         };

@@ -1,5 +1,5 @@
 
-<html lang="UTF-8" xmlns:th="http://www.thymeleaf.org">
+<html lang="UTF8" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title th:text="#{system.name}"></title>
 
@@ -18,6 +18,9 @@
 
 
 </head>
+
+
+
 <body class="page-body">
 
 <div class="settings-pane">
@@ -760,7 +763,7 @@
 											</span>
 
                                         <span class="line desc small">
-												This ain¡¯t our first item, it is the best of the rest.
+												This ainï¿½ï¿½t our first item, it is the best of the rest.
 											</span>
                                     </a>
                                 </li>
@@ -814,7 +817,7 @@
 											</span>
 
                                         <span class="line desc small">
-												This ain¡¯t our first item, it is the best of the rest.
+												This ainï¿½ï¿½t our first item, it is the best of the rest.
 											</span>
                                     </a>
                                 </li>
