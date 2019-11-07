@@ -5,7 +5,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.util.ResourceUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -15,7 +18,9 @@ import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Configuration
@@ -54,11 +59,12 @@ public class I18nConfig {
         ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
         if (!StringUtils.isEmpty(baseFolder)) {
             try {
-                String[] baseNames = getAllBaseNames(baseFolder);
+//                String[] baseNames = getAllBaseNames(baseFolder);
+//                System.out.println(Arrays.toString(baseNames));
                 messageSource.setDefaultEncoding("UTF-8");
-                messageSource.setBasenames(baseNames);
+                messageSource.setBasenames("i18n/messages");
 
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -92,12 +98,14 @@ public class I18nConfig {
      * @param path
      */
     private void getAllFile(List<String> basenames, File folder, String path) {
+        System.out.println(folder + " :  "+path);
         if (folder.isDirectory()) {
             for (File file : folder.listFiles()) {
                 this.getAllFile(basenames, file, path + folder.getName() + File.separator);
             }
         } else {
             String i18Name = getI18FileName(path + folder.getName());
+            System.out.println(i18Name);
             if (!basenames.contains(i18Name)) {
                 basenames.add(i18Name);
             }
@@ -118,4 +126,12 @@ public class I18nConfig {
         }
         return filename;
     }
+
+    public static Resource resourceLoader(String fileFullPath) throws IOException {
+
+        ResourceLoader resourceLoader = new DefaultResourceLoader();
+        return  resourceLoader.getResource(fileFullPath);
+
+    }
+
 }
