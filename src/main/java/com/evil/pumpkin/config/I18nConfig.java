@@ -54,11 +54,11 @@ public class I18nConfig {
         ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
         if (!StringUtils.isEmpty(baseFolder)) {
             try {
-                String[] baseNames = getAllBaseNames(baseFolder);
+//                String[] baseNames = getAllBaseNames(baseFolder);
                 messageSource.setDefaultEncoding("UTF-8");
-                messageSource.setBasenames(baseNames);
+                messageSource.setBasenames("i18n/message");
 
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

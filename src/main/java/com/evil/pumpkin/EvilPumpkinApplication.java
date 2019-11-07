@@ -1,11 +1,13 @@
 package com.evil.pumpkin;
 
+import com.evil.pumpkin.untils.HttpClientUtil;
 import com.evil.pumpkin.untils.InfoUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import oshi.SystemInfo;
 import oshi.hardware.HardwareAbstractionLayer;
 import oshi.hardware.NetworkIF;
@@ -30,23 +32,28 @@ public class EvilPumpkinApplication {
 	public static void main(String[] args) {
 
 
-//		Map<String, String> map = new HashMap<>();
-//		map.put("text", InfoUtils.get("currentStatus") + ": " + InfoUtils.getHostname());
-//		map.put("desp", InfoUtils.getDeviceInfo());
-//
-//		HttpClientUtil.doPost("https://sc.ftqq.com/SCU48981T4fb6e368a395cf49b26f8bec99fe6cbf5cb93aed4ba36.send", map);
 
 		SpringApplication.run(EvilPumpkinApplication.class, args);
 
 
 	}
-//	@Scheduled(cron = "0 */1 * * * ?")
-//	public void reportCurrentTime() {
-//		logger.info("Recording the network Traffic");
-//		recordNetworkTraffic(hardware.getNetworkIFs());
-//	}
+	@Scheduled(cron = "0 0 * * *  ?")
+	public void reportCurrentTime() {
+		logger.info("\n\n\n BEGIN --------------> Sending notify to serverchan ........");
+		Map<String, String> map = new HashMap<>();
+		map.put("text", InfoUtils.get("currentStatus") + ": " + InfoUtils.getHostname());
+		map.put("desp", InfoUtils.getDeviceInfo());
+
+		HttpClientUtil.doPost("https://sc.ftqq.com/SCU48981T4fb6e368a395cf49b26f8bec99fe6cbf5cb93aed4ba36.send", map);
 
 
+		logger.info("\n\n\n END --------------> Sending notify to serverchan ........");
+	}
+
+	@Scheduled(cron = "0 */1 * * * ?")
+	public void reportNetworkTraffic() {
+			recordNetworkTraffic(si.getHardware().getNetworkIFs());
+	}
 
 	private static void recordNetworkTraffic(NetworkIF[] networkIFs) {
 		StringBuilder sb = new StringBuilder();
@@ -59,7 +66,6 @@ public class EvilPumpkinApplication {
 			}
 			try {
 				List<Long> downloadPackage = getDownloadHistoryByInterfaceName(net.getDisplayName());
-				System.out.println(net.getName());
 				long currentDownload=net.getBytesRecv();
 				long lastDownload=0;
 				if (downloadPackage.size()>0){
@@ -89,7 +95,10 @@ public class EvilPumpkinApplication {
 	}
 
 	private static List<Long> getDownloadHistoryByInterfaceName(String name){
-		return networkTrafficeMap.get(name);
+		if (networkTrafficeMap.size()>0){
+			return networkTrafficeMap.get(name);
+		}
+		return new ArrayList<>();
 
 	}
 
