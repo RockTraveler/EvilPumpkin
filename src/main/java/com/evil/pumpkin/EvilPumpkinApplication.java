@@ -8,6 +8,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import oshi.SystemInfo;
 import oshi.hardware.HardwareAbstractionLayer;
 import oshi.hardware.NetworkIF;
@@ -17,7 +19,7 @@ import java.util.*;
 
 @SpringBootApplication
 @EnableScheduling
-public class EvilPumpkinApplication {
+public class EvilPumpkinApplication  {
 	private static final Logger logger = LoggerFactory.getLogger(EvilPumpkinApplication.class);
 	private static Map<String,List> networkTrafficeMap = new HashMap<>();
 
@@ -25,7 +27,6 @@ public class EvilPumpkinApplication {
 	SystemInfo si = new SystemInfo();
 	HardwareAbstractionLayer hardware = si.getHardware();
 	OperatingSystem os = si.getOperatingSystem();
-
 
 
 
@@ -50,41 +51,41 @@ public class EvilPumpkinApplication {
 		logger.info("\n\n\n END --------------> Sending notify to serverchan ........");
 	}
 
-	@Scheduled(cron = "0 */1 * * * ?")
-	public void reportNetworkTraffic() {
-			recordNetworkTraffic(si.getHardware().getNetworkIFs());
-	}
+//	@Scheduled(cron = "0 */1 * * * ?")
+//	public void reportNetworkTraffic() {
+//			recordNetworkTraffic(si.getHardware().getNetworkIFs());
+//	}
 
-	private static void recordNetworkTraffic(NetworkIF[] networkIFs) {
-		StringBuilder sb = new StringBuilder();
-		if (networkIFs.length == 0) {
-			sb.append(" Unknown");
-		}
-		for (NetworkIF net : networkIFs) {
-			if (net.getIPv4addr().length < 1) {
-				continue;
-			}
-			try {
-				List<Long> downloadPackage = getDownloadHistoryByInterfaceName(net.getDisplayName());
-				long currentDownload=net.getBytesRecv();
-				long lastDownload=0;
-				if (downloadPackage.size()>0){
-					lastDownload=downloadPackage.get(downloadPackage.size()-1);
-//					InfoUtils.getMemorySize(currentDownload-lastDownload);
-					logger.info(net.getDisplayName()+" : "+InfoUtils.getMemorySize( currentDownload-lastDownload)+" /Min");
-				}
-				downloadPackage.add(currentDownload);
-				networkTrafficeMap.put(net.getDisplayName(),downloadPackage);
-//				logger.info("Download:"+currentDownload);
-//				logger.info("Upload:"+net.getBytesRecv());
-
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
-		}
-
-	}
+//	private static void recordNetworkTraffic(NetworkIF[] networkIFs) {
+//		StringBuilder sb = new StringBuilder();
+//		if (networkIFs.length == 0) {
+//			sb.append(" Unknown");
+//		}
+//		for (NetworkIF net : networkIFs) {
+//			if (net.getIPv4addr().length < 1) {
+//				continue;
+//			}
+//			try {
+//				List<Long> downloadPackage = getDownloadHistoryByInterfaceName(net.getDisplayName());
+//				long currentDownload=net.getBytesRecv();
+//				long lastDownload=0;
+//				if (downloadPackage.size()>0){
+//					lastDownload=downloadPackage.get(downloadPackage.size()-1);
+////					InfoUtils.getMemorySize(currentDownload-lastDownload);
+//					logger.info(net.getDisplayName()+" : "+InfoUtils.getMemorySize( currentDownload-lastDownload)+" /Min");
+//				}
+//				downloadPackage.add(currentDownload);
+//				networkTrafficeMap.put(net.getDisplayName(),downloadPackage);
+////				logger.info("Download:"+currentDownload);
+////				logger.info("Upload:"+net.getBytesRecv());
+//
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//
+//		}
+//
+//	}
 
 	private static long getLastDownByInterfaceName(String name){
 		List<Long> downloadPackage= networkTrafficeMap.get(name);

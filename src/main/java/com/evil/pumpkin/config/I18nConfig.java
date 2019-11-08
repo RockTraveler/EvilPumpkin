@@ -56,7 +56,7 @@ public class I18nConfig {
             try {
 //                String[] baseNames = getAllBaseNames(baseFolder);
                 messageSource.setDefaultEncoding("UTF-8");
-                messageSource.setBasenames("i18n/message");
+                messageSource.setBasenames("i18n/messages");
 
             } catch (Exception e) {
                 e.printStackTrace();
