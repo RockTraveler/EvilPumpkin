@@ -32,14 +32,14 @@ public class EvilPumpkinApplication  {
 
 	public static void main(String[] args) {
 
-
+//		reportCurrentTime();
 
 		SpringApplication.run(EvilPumpkinApplication.class, args);
 
 
 	}
 	@Scheduled(cron = "0 0 * * *  ?")
-	public void reportCurrentTime() {
+	public static void reportCurrentTime() {
 		logger.info("\n\n\n BEGIN --------------> Sending notify to serverchan ........");
 		Map<String, String> map = new HashMap<>();
 		map.put("text", InfoUtils.get("currentStatus") + ": " + InfoUtils.getHostname());

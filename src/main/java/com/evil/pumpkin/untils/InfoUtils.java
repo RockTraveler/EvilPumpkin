@@ -104,7 +104,7 @@ public class InfoUtils {
 
         //Disk
         sb.append(BOLD).append(get("storage")).append(BOLD).append(ENTER).append(ENTER);
-        sb.append(getDiskStores(hardware.getDiskStores()));
+//        sb.append(getDiskStores(hardware));
         sb.append(ENTER).append(ENTER).append(LINE).append(ENTER);
 
 
@@ -309,7 +309,7 @@ public class InfoUtils {
 
     private static String getCpuTemperature(Sensors sensors) {
         StringBuffer sb = new StringBuffer();
-      if(SystemInfo.getCurrentPlatformEnum()==PlatformEnum.WINDOWS){
+        if(SystemInfo.getCurrentPlatformEnum()==PlatformEnum.WINDOWS){
 
             Components components = JSensors.get.components();
             List<Cpu> cpus = components.cpus;
@@ -462,7 +462,6 @@ public class InfoUtils {
         StringBuffer pmBuffer = new StringBuffer();
         PhysicalMemory[] pmArray = memory.getPhysicalMemory();
         if (pmArray.length > 0) {
-            int count = 1;
             for (PhysicalMemory pm : pmArray) {
                 pmBuffer.append(POINT).append(ENTER).append(H5).append(get("physicalMemorySize")).append(COLON).append(getMemorySize(pm.getCapacity())).append(ENTER);
                 pmBuffer.append(H5).append(get("physicalMemoryBankLabel")).append(COLON).append(pm.getBankLabel()).append(ENTER);
@@ -475,15 +474,22 @@ public class InfoUtils {
         return pmBuffer.toString();
     }
 
-    private static String getDiskStores(HWDiskStore[] diskStores) {
+    private static String getDiskStores(HardwareAbstractionLayer hardware) {
         StringBuffer diskBuffer = new StringBuffer();
-        for (HWDiskStore disk : diskStores) {
-            if (disk.getModel().equals("Unknown")){
-                continue;
+        try{
+            HWDiskStore[] diskStores = hardware.getDiskStores();
+            for (HWDiskStore disk : diskStores) {
+                if (disk.getModel().equals("Unknown")){
+                    continue;
+                }
+                diskBuffer.append(POINT).append(ENTER).append(H5).append(get("diskName")).append(COLON).append(disk.getModel()).append(ENTER);
+                diskBuffer.append(H5).append(get("diskCapacity")).append(COLON).append(FormatUtil.formatBytesDecimal(disk.getSize())).append(ENTER);
             }
-            diskBuffer.append(POINT).append(ENTER).append(H5).append(get("diskName")).append(COLON).append(disk.getModel()).append(ENTER);
-            diskBuffer.append(H5).append(get("diskCapacity")).append(COLON).append(FormatUtil.formatBytesDecimal(disk.getSize())).append(ENTER);
+        }catch (Exception e){
+            diskBuffer.append(H5).append(get("unsupportSystem")).append(ENTER);
         }
+
+
         return diskBuffer.toString();
     }
 
@@ -575,7 +581,7 @@ public class InfoUtils {
         List<OSProcess> procs = Arrays.asList(os.getProcesses(10, sort));
 
         sb.append(H6).append(" PID ").append(CODE_SPACE_TITLE).append(" CPU ").append(CODE_SPACE_TITLE).append(" MEM ").append(CODE_SPACE_TITLE).append(" VSZ").append(CODE_SPACE_TITLE).append(" RSS ").append(CODE_SPACE_TITLE).append(" Name ").append(CODE_SPACE_TITLE).append(ENTER);
-                for (int i = 0; i < procs.size() && i < 10; i++) {
+        for (int i = 0; i < procs.size() && i < 10; i++) {
 
             OSProcess p = procs.get(i);
             sb.append(H6)

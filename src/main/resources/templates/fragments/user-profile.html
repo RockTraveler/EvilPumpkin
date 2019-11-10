@@ -14,7 +14,7 @@
 
                     <div class="user-image">
                         <a href="#">
-                            <img src="/user.png" class="img-responsive img-circle" />
+                            <img src="/largeIco.png" class="img-responsive img-circle" />
                         </a>
                     </div>
 
@@ -35,6 +35,35 @@
                 </div>
 
             </div>
+            <div class="col-md-8 link-blocks-env">
+
+                <div class="links-block left-sep">
+                    <h4>
+                        <span th:text="#{page.language.display}"></span>
+                    </h4>
+
+                    <ul class="list-unstyled">
+                        <div class="btn-group left-dropdown">
+                            <button type="button" class="btn btn-success small" th:text="#{page.language.switcher}"></button>
+                            <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown">
+                                <span class="caret"></span>
+                            </button>
+
+                            <ul class="dropdown-menu dropdown-green" role="menu">
+                                <li>
+                                    <a href="/index?locale=en_US" th:text="#{page.language.english}">Action</a>
+                                </li>
+                                <li>
+                                    <a href="/index?locale=zh_CN" th:text="#{page.language.chinese}">Action</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </ul>
+                </div>
+
+
+            </div>
+
 
 
         </div>

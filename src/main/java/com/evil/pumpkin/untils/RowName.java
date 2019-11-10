@@ -123,5 +123,6 @@ public class RowName {
     private static final List<String> markException = new ArrayList<>(Arrays.asList("无标记", "Mark doesn't existed."));
     private static final List<String> networkTrafficException = new ArrayList<>(Arrays.asList("未获取到流量", "Network Traffic can't be read"));
     private static final List<String> networkInterfaceException = new ArrayList<>(Arrays.asList("无网络接口", "Network Interface not found"));
+    private static final List<String> unsupportSystem = new ArrayList<>(Arrays.asList("不支持的系统类型(缺失系统文件)", "Unsupport System delected(key system file missing)"));
 
 }
