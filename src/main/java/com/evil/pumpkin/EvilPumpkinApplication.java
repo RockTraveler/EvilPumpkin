@@ -30,7 +30,7 @@ public class EvilPumpkinApplication  {
 
 	public static void main(String[] args) {
 
-//		reportCurrentStatus();
+		reportCurrentStatus();
 
 		SpringApplication.run(EvilPumpkinApplication.class, args);
 
