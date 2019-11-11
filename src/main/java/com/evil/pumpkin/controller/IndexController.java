@@ -33,8 +33,7 @@ public class IndexController {
     }
 
     @RequestMapping("/index")
-    public String index(HttpServletRequest request, HttpServletResponse response) {
-        logger.info("----- BEGIN --- Getting application.properties ........");
+    public String index(Model model) {
         StringBuffer stringBuffer = new StringBuffer();
         try{
             InputStream in = null;
@@ -51,21 +50,17 @@ public class IndexController {
 
             Properties prop = new Properties();
             prop.load(new InputStreamReader(in,"UTF-8"));
-            for (String key : prop.stringPropertyNames()) {
 
-                stringBuffer.append(key + "=" + prop.getProperty(key)).append(";");
 
-                logger.info(key + "=" + prop.getProperty(key));
-            }
-            request.setAttribute("name","Ripper Test");
+            model.addAttribute("serverchanURL",prop.getProperty("serverchan.url",""));
+            model.addAttribute("mark",prop.getProperty("mark",""));
+            model.addAttribute("language",prop.getProperty("language","0"));
         }catch (Exception e){
             e.printStackTrace();
         }
 
-        logger.info("----- END --- Getting application.properties ........");
         return "index";
     }
-
 
 
 
