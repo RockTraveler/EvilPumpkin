@@ -112,10 +112,10 @@ public class InfoUtils {
         sb.append(getPhysicalMemory(hardware.getMemory())).append(ENTER).append(ENTER);
         sb.append(LINE).append(ENTER);
 
-        //Disk
-//        sb.append(BOLD).append(get("storage")).append(BOLD).append(ENTER).append(ENTER);
-//        sb.append(getDiskStores(hardware));
-//        sb.append(ENTER).append(ENTER).append(LINE).append(ENTER);
+        // Disk
+        sb.append(BOLD).append(get("storage")).append(BOLD).append(ENTER).append(ENTER);
+        sb.append(getDiskStores(hardware));
+        sb.append(ENTER).append(ENTER).append(LINE).append(ENTER);
 
 
         //Network Interface
