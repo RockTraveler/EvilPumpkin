@@ -60,7 +60,7 @@ public class EvilPumpkinApplication  {
 	@Scheduled(cron = "0 */1 * * * ?")
 	public void reportNetworkTraffic() {
 
-		System.out.println("http://whatismyip.akamai.com Return IP: "+ HttpClientUtil.doGet("http://whatismyip.akamai.com"));
+		recordNetworkTraffic(hardware.getNetworkIFs());
 
 	}
 
