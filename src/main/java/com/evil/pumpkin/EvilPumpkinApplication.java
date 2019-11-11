@@ -8,8 +8,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import oshi.SystemInfo;
 import oshi.hardware.HardwareAbstractionLayer;
 import oshi.hardware.NetworkIF;
@@ -22,7 +20,7 @@ import java.util.*;
 public class EvilPumpkinApplication  {
 	private static final Logger logger = LoggerFactory.getLogger(EvilPumpkinApplication.class);
 	private static Map<String,List> networkTrafficeMap = new HashMap<>();
-
+	private static List<Long> downloadPackage = new ArrayList<>();
 
 	SystemInfo si = new SystemInfo();
 	HardwareAbstractionLayer hardware = si.getHardware();
@@ -32,60 +30,72 @@ public class EvilPumpkinApplication  {
 
 	public static void main(String[] args) {
 
-//		reportCurrentTime();
+//		reportCurrentStatus();
 
 		SpringApplication.run(EvilPumpkinApplication.class, args);
 
 
 	}
-	@Scheduled(cron = "0 0 * * *  ?")
-	public static void reportCurrentTime() {
-		logger.info("\n\n\n BEGIN --------------> Sending notify to serverchan ........");
-		Map<String, String> map = new HashMap<>();
-		map.put("text", InfoUtils.get("currentStatus") + ": " + InfoUtils.getHostname());
-		map.put("desp", InfoUtils.getDeviceInfo());
 
-		HttpClientUtil.doPost("https://sc.ftqq.com/SCU48981T4fb6e368a395cf49b26f8bec99fe6cbf5cb93aed4ba36.send", map);
+//	@Scheduled(cron = "0 */5 * * * ?")
+	@Scheduled(cron = "0 0 * * *  ?")
+	public static void reportCurrentStatus() {
+		logger.info("\n\n\n BEGIN --------------> Sending notify to serverchan ........");
+		try{
+			Map<String, String> map = new HashMap<>();
+			map.put("text", InfoUtils.get("currentStatus") + ": " + InfoUtils.getHostname());
+			map.put("desp", InfoUtils.getDeviceInfo());
+
+			HttpClientUtil.doPost("https://sc.ftqq.com/SCU48981T4fb6e368a395cf49b26f8bec99fe6cbf5cb93aed4ba36.send", map);
+
+		}catch (Exception e){
+			e.printStackTrace();
+
+		}
 
 
 		logger.info("\n\n\n END --------------> Sending notify to serverchan ........");
 	}
 
-//	@Scheduled(cron = "0 */1 * * * ?")
-//	public void reportNetworkTraffic() {
-//			recordNetworkTraffic(si.getHardware().getNetworkIFs());
-//	}
+	@Scheduled(cron = "0 */1 * * * ?")
+	public void reportNetworkTraffic() {
 
-//	private static void recordNetworkTraffic(NetworkIF[] networkIFs) {
-//		StringBuilder sb = new StringBuilder();
-//		if (networkIFs.length == 0) {
-//			sb.append(" Unknown");
-//		}
-//		for (NetworkIF net : networkIFs) {
-//			if (net.getIPv4addr().length < 1) {
-//				continue;
-//			}
-//			try {
-//				List<Long> downloadPackage = getDownloadHistoryByInterfaceName(net.getDisplayName());
-//				long currentDownload=net.getBytesRecv();
-//				long lastDownload=0;
-//				if (downloadPackage.size()>0){
-//					lastDownload=downloadPackage.get(downloadPackage.size()-1);
-////					InfoUtils.getMemorySize(currentDownload-lastDownload);
-//					logger.info(net.getDisplayName()+" : "+InfoUtils.getMemorySize( currentDownload-lastDownload)+" /Min");
-//				}
-//				downloadPackage.add(currentDownload);
-//				networkTrafficeMap.put(net.getDisplayName(),downloadPackage);
-////				logger.info("Download:"+currentDownload);
-////				logger.info("Upload:"+net.getBytesRecv());
-//
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
-//
-//		}
-//
-//	}
+		System.out.println("http://whatismyip.akamai.com Return IP: "+ HttpClientUtil.doGet("http://whatismyip.akamai.com"));
+
+	}
+
+	private static void recordNetworkTraffic(NetworkIF[] networkIFs) {
+		StringBuilder sb = new StringBuilder();
+		if (networkIFs.length == 0) {
+			sb.append(" Unknown");
+		}
+		for (NetworkIF net : networkIFs) {
+			if (net.getIPv4addr().length < 1) {
+				continue;
+			}
+			try {
+			 	downloadPackage= getDownloadHistoryByInterfaceName(net.getDisplayName());
+				long currentDownload=net.getBytesRecv();
+				long lastDownload=0;
+				if (downloadPackage !=null&& downloadPackage.size()>0 ){
+					lastDownload=downloadPackage.get(downloadPackage.size()-1);
+					logger.info(net.getDisplayName()+" : "+InfoUtils.getMemorySize( currentDownload-lastDownload)+" /Min");
+
+				}
+
+				if (downloadPackage!=null){
+					downloadPackage.add(currentDownload);
+					networkTrafficeMap.put(net.getDisplayName(),downloadPackage);
+				}
+
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+		}
+
+	}
 
 	private static long getLastDownByInterfaceName(String name){
 		List<Long> downloadPackage= networkTrafficeMap.get(name);
@@ -99,8 +109,8 @@ public class EvilPumpkinApplication  {
 		if (networkTrafficeMap.size()>0){
 			return networkTrafficeMap.get(name);
 		}
-		return new ArrayList<>();
 
+		return new ArrayList<>();
 	}
 
 

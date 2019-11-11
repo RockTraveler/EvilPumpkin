@@ -1,11 +1,14 @@
 package com.evil.pumpkin.untils;
 
+import com.evil.pumpkin.EvilPumpkinApplication;
 import com.profesorfalken.jsensors.JSensors;
 import com.profesorfalken.jsensors.model.components.Components;
 import com.profesorfalken.jsensors.model.components.Cpu;
 import com.profesorfalken.jsensors.model.sensors.Temperature;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.util.StringUtils;
@@ -40,9 +43,13 @@ public class InfoUtils {
     private static final String SPACE=" ";
     private static final String CODE_SPACE_TITLE ="&emsp;&emsp;";
     private static final String CODE_SPACE ="&nbsp;";
+
+
+    private static final Logger logger = LoggerFactory.getLogger(InfoUtils.class);
+
     public static String getDeviceInfo() {
 
-
+        logger.info("Enter Device info");
         // Prepare to gather the information.
         SystemInfo si = new SystemInfo();
         HardwareAbstractionLayer hardware = si.getHardware();
@@ -53,11 +60,12 @@ public class InfoUtils {
         sb.append(H6).append(get("dataProvided")).append(COLON).append(get("projectName")).append(ENTER);
         sb.append(LINE);
 
+
         /**
          *      Base Information
          **/
 
-
+        logger.info("To get Base Information");
         sb.append(LINE).append(ENTER);
         sb.append(H4).append(BOLD).append(get("baseInfo")).append(BOLD).append(ENTER).append(ENTER);
         sb.append(H5).append(get("hostname")).append(COLON).append(getHostname()).append(ENTER);
@@ -78,6 +86,7 @@ public class InfoUtils {
         /**
          *      OS
          **/
+        logger.info("To get OS");
         sb.append(H4).append(BOLD).append(get("osInfo")).append(BOLD).append(ENTER).append(ENTER);
         sb.append(H6).append(get("osVersion")).append(COLON).append(os.toString()).append(ENTER);
         sb.append(H6).append(get("osArch")).append(COLON).append(System.getProperty("os.arch")).append(ENTER);
@@ -86,6 +95,7 @@ public class InfoUtils {
         /**
          *      Hardware part
          **/
+        logger.info("To get Hardware part");
         //Processor
         sb.append(H4).append(BOLD).append(get("hardware")).append(BOLD).append(ENTER).append(ENTER);
         sb.append(BOLD).append(get("processor")).append(BOLD).append(ENTER);
@@ -103,9 +113,9 @@ public class InfoUtils {
         sb.append(LINE).append(ENTER);
 
         //Disk
-        sb.append(BOLD).append(get("storage")).append(BOLD).append(ENTER).append(ENTER);
+//        sb.append(BOLD).append(get("storage")).append(BOLD).append(ENTER).append(ENTER);
 //        sb.append(getDiskStores(hardware));
-        sb.append(ENTER).append(ENTER).append(LINE).append(ENTER);
+//        sb.append(ENTER).append(ENTER).append(LINE).append(ENTER);
 
 
         //Network Interface
@@ -126,6 +136,7 @@ public class InfoUtils {
         /**
          *      File System
          */
+        logger.info("To get File System");
         sb.append(H4).append(BOLD).append(get("fileSystem")).append(BOLD).append(ENTER).append(ENTER);
         sb.append(getFileSystem(os.getFileSystem())).append(ENTER);
         sb.append(LINE).append(ENTER);
@@ -134,7 +145,7 @@ public class InfoUtils {
         /**
          *     System Processes
          */
-
+        logger.info("To get System Processes");
         sb.append(H4).append(BOLD).append(get("systemProcess")).append(BOLD).append(ENTER).append(ENTER).append(ENTER);
         sb.append(BOLD).append(get("processOrder")).append(BOLD).append(COLON).append(get("cpuUsage")).append(ENTER).append(ENTER).append(ENTER);
         sb.append(getProcessesText(os,hardware.getMemory(), OperatingSystem.ProcessSort.CPU)).append(ENTER).append(ENTER);
@@ -145,6 +156,7 @@ public class InfoUtils {
         /**
          *      Network Traffic Information
          */
+        logger.info("To get Network Traffic");
         sb.append(H4).append(BOLD).append(get("networkTrafficInfo")).append(BOLD).append(ENTER).append(ENTER);
 
 
@@ -167,6 +179,7 @@ public class InfoUtils {
 
 
     public static String getHostname() {
+        logger.info("Begin to get hostname.");
         String hostname = "unknown host";
         try {
             InetAddress addr = InetAddress.getLocalHost();
@@ -174,6 +187,7 @@ public class InfoUtils {
         } catch (Exception e) {
             return "unknown host";
         }
+        logger.info("End to get hostname.");
         return hostname;
     }
 
@@ -231,18 +245,24 @@ public class InfoUtils {
 
 
     private static String getInternetIP(String url) {
+        logger.info("IP URL: "+url);
         String ip = get("internetIPException");
         try {
-            HttpResponse response = HttpClientUtil.get(url);
-            ip = EntityUtils.toString(response.getEntity(), "utf-8");
+            ip =HttpClientUtil.doGet(url);
+            logger.info(url+"Return IP: "+ip);
             return ip.trim();
         } catch (Exception e) {
+            e.printStackTrace();
+            logger.info(url+"Return IP: "+ip);
             return ip.trim();
         }
+
+
 
     }
 
     private static String getInternetIP(){
+        logger.info("try to get external ip address");
         StringBuffer sb = new StringBuffer();
         String firstIP = getInternetIP("http://whatismyip.akamai.com");
         String secondIP= getInternetIP("http://myip.ipip.net/");
@@ -255,7 +275,7 @@ public class InfoUtils {
             sb.append(H6).append(get("firstInternetIP")).append(COLON).append(firstIP).append(SPACE).append(get("akamai")).append(ENTER);
             sb.append(H6).append(get("secondInternetIP")).append(COLON).append(secondIP).append(SPACE).append(get("ipipNet")).append(ENTER).append(ENTER);
         }
-
+        logger.info("try to get external ip address");
 
         return sb.toString();
     }

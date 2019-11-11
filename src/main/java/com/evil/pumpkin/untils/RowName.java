@@ -24,6 +24,7 @@ public class RowName {
     private static final List<String> yes = new ArrayList<>(Arrays.asList("是", "Yes"));
     private static final List<String> no = new ArrayList<>(Arrays.asList("否", "No"));
     private static final List<String> akamai = new ArrayList<>(Arrays.asList("(由Akamai提供数据)", "(Provided by Akamai)"));
+    private static final List<String> amazon = new ArrayList<>(Arrays.asList("(由Amazon提供数据)", "(Provided by Amazon)"));
     private static final List<String> ipipNet = new ArrayList<>(Arrays.asList("(由ipip.net提供数据)", "(Provided by ipip.net)"));
     private static final List<String> osName = new ArrayList<>(Arrays.asList("操作系统", "OS"));
     private static final List<String> sysTime = new ArrayList<>(Arrays.asList("系统时间", "System Time"));
