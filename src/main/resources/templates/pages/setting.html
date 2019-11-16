@@ -1,0 +1,68 @@
+
+
+<div class="row">
+    <div class="col-sm-12">
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title" th:text="#{page.menu.setting}" ></h3>
+                <div class="panel-options">
+                    <a href="#" data-toggle="panel">
+                        <span class="collapse-icon">–</span>
+                        <span class="expand-icon">+</span>
+                    </a>
+                    <a href="#" data-toggle="remove">
+                        ×
+                    </a>
+                </div>
+            </div>
+            <div class="panel-body">
+
+                <form class="form-horizontal" action="/update" method="post">
+
+                    <div class="form-group has-info">
+                        <label class="col-sm-2 control-label"  th:text="#{page.menu.setting.serverchan.url}">Input text field</label>
+
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="serverChan_url" name="serverChan_url" th:placeholder="#{page.menu.setting.serverchan.url}" th:value="${serverchanURL}">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="mark" th:text="#{page.menu.setting.mark}" ></label>
+
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="mark"  name="mark" th:placeholder="#{page.menu.setting.mark}" th:value="${mark}"  />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" th:text="#{page.language.text}" ></label>
+                        <!--                            <label class="col-sm-2 control-label" th:text="${language}" ></label>-->
+
+
+                        <div class="col-sm-10">
+                            <select class="form-control" id="sboxit-1" name="language" style="display: none;"  >
+                                <option value="0" th:text="#{page.language.chinese}" th:selected="${value}==${language}"></option>
+                                <option value="1" th:text="#{page.language.english}" th:selected="${value}==${language}"></option>
+
+                            </select>
+                            <!--                                <span id="sboxit-1SelectBoxItContainer" class="selectboxit-container selectboxit-container" role="combobox" aria-autocomplete="list" aria-haspopup="true" aria-expanded="false" aria-owns="sboxit-1SelectBoxItOptions"><span id="sboxit-1SelectBoxIt" class="selectboxit form-control selectboxit-enabled selectboxit-btn" name="" tabindex="0" unselectable="on" style="width: 154px;"><span class="selectboxit-option-icon-container"><i id="sboxit-1SelectBoxItDefaultIcon" class="selectboxit-default-icon selectboxit-option-icon selectboxit-container" unselectable="on"></i></span><span id="sboxit-1SelectBoxItText" class="selectboxit-text" unselectable="on" data-val="al" aria-live="polite" style="max-width: 31px;">Albania</span><span id="sboxit-1SelectBoxItArrowContainer" class="selectboxit-arrow-container" unselectable="on"><i id="sboxit-1SelectBoxItArrow" class="selectboxit-arrow selectboxit-default-arrow" unselectable="on"></i></span></span><ul id="sboxit-1SelectBoxItOptions" class="selectboxit-options selectboxit-list ps-container" tabindex="-1" role="listbox" aria-hidden="true" style="min-width: 59.0093px; max-height: 250px; top: -250px; display: none;"><li data-id="0" data-val="al" data-disabled="false" class="selectboxit-option  selectboxit-option-first ms-hover selectboxit-selected" role="option"><a class="selectboxit-option-anchor"><span class="selectboxit-option-icon-container"><i class="selectboxit-option-icon  selectboxit-container"></i></span>Albania</a></li><li data-id="1" data-val="au" data-disabled="false" class="selectboxit-option ms-hover" role="option"><a class="selectboxit-option-anchor"><span class="selectboxit-option-icon-container"><i class="selectboxit-option-icon  selectboxit-container"></i></span>Australia</a></li><li data-id="2" data-val="bd" data-disabled="false" class="selectboxit-option ms-hover" role="option"><a class="selectboxit-option-anchor"><span class="selectboxit-option-icon-container"><i class="selectboxit-option-icon  selectboxit-container"></i></span>Bandgladesh</a></li><li data-id="3" data-val="br" data-disabled="false" class="selectboxit-option ms-hover" role="option"><a class="selectboxit-option-anchor"><span class="selectboxit-option-icon-container"><i class="selectboxit-option-icon  selectboxit-container"></i></span>Brasil</a></li><li data-id="4" data-val="ca" data-disabled="false" class="selectboxit-option ms-hover" role="option"><a class="selectboxit-option-anchor"><span class="selectboxit-option-icon-container"><i class="selectboxit-option-icon  selectboxit-container"></i></span>Canada</a></li><li data-id="5" data-val="cn" data-disabled="false" class="selectboxit-option ms-hover selectboxit-focus" role="option" data-active=""><a class="selectboxit-option-anchor"><span class="selectboxit-option-icon-container"><i class="selectboxit-option-icon  selectboxit-container"></i></span>China</a></li><li data-id="6" data-val="de" data-disabled="false" class="selectboxit-option ms-hover" role="option"><a class="selectboxit-option-anchor"><span class="selectboxit-option-icon-container"><i class="selectboxit-option-icon  selectboxit-container"></i></span>Germany</a></li><li data-id="7" data-val="fr" data-disabled="false" class="selectboxit-option ms-hover" role="option"><a class="selectboxit-option-anchor"><span class="selectboxit-option-icon-container"><i class="selectboxit-option-icon  selectboxit-container"></i></span>France</a></li><li data-id="8" data-val="gr" data-disabled="false" class="selectboxit-option ms-hover" role="option"><a class="selectboxit-option-anchor"><span class="selectboxit-option-icon-container"><i class="selectboxit-option-icon  selectboxit-container"></i></span>Greece</a></li><li data-id="9" data-val="jp" data-disabled="false" class="selectboxit-option" role="option"><a class="selectboxit-option-anchor"><span class="selectboxit-option-icon-container"><i class="selectboxit-option-icon  selectboxit-container"></i></span>Japan</a></li><li data-id="10" data-val="xk" data-disabled="false" class="selectboxit-option" role="option"><a class="selectboxit-option-anchor"><span class="selectboxit-option-icon-container"><i class="selectboxit-option-icon  selectboxit-container"></i></span>Kosovo</a></li><li data-id="11" data-val="nl" data-disabled="false" class="selectboxit-option" role="option"><a class="selectboxit-option-anchor"><span class="selectboxit-option-icon-container"><i class="selectboxit-option-icon  selectboxit-container"></i></span>Netherlands</a></li><li data-id="12" data-val="no" data-disabled="false" class="selectboxit-option" role="option"><a class="selectboxit-option-anchor"><span class="selectboxit-option-icon-container"><i class="selectboxit-option-icon  selectboxit-container"></i></span>Norway</a></li><li data-id="13" data-val="ru" data-disabled="false" class="selectboxit-option" role="option"><a class="selectboxit-option-anchor"><span class="selectboxit-option-icon-container"><i class="selectboxit-option-icon  selectboxit-container"></i></span>Russia</a></li><li data-id="14" data-val="se" data-disabled="false" class="selectboxit-option" role="option"><a class="selectboxit-option-anchor"><span class="selectboxit-option-icon-container"><i class="selectboxit-option-icon  selectboxit-container"></i></span>Sweden</a></li><li data-id="15" data-val="tr" data-disabled="false" class="selectboxit-option" role="option"><a class="selectboxit-option-anchor"><span class="selectboxit-option-icon-container"><i class="selectboxit-option-icon  selectboxit-container"></i></span>Turkey</a></li><li data-id="16" data-val="uk" data-disabled="false" class="selectboxit-option" role="option"><a class="selectboxit-option-anchor"><span class="selectboxit-option-icon-container"><i class="selectboxit-option-icon  selectboxit-container"></i></span>United Kingdom</a></li><li data-id="17" data-val="us" data-disabled="false" class="selectboxit-option  selectboxit-option-last" role="option"><a class="selectboxit-option-anchor"><span class="selectboxit-option-icon-container"><i class="selectboxit-option-icon  selectboxit-container"></i></span>United States</a></li><div class="ps-scrollbar-x-rail" style="display: block; width: 665.009px; left: 0px; bottom: 3px;"><div class="ps-scrollbar-x" style="left: 0px; width: 0px;"></div></div><div class="ps-scrollbar-y-rail" style="display: block; top: 0px; height: 248.009px; right: 2px;"><div class="ps-scrollbar-y" style="top: 0px; height: 0px;"></div></div></ul></span>-->
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-5"  > </div>
+
+                        <button class="btn btn-primary" type="submit" th:text="#{page.submit}"></button>
+                        <button class="btn btn-blue" type="reset" th:text="#{page.cancel}"></button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+

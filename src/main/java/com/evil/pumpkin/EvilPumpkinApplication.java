@@ -6,13 +6,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.FileSystemResourceLoader;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.util.StringUtils;
 import oshi.SystemInfo;
 import oshi.hardware.HardwareAbstractionLayer;
 import oshi.hardware.NetworkIF;
 import oshi.software.os.OperatingSystem;
 
+import java.io.*;
 import java.util.*;
 
 @SpringBootApplication
@@ -30,31 +35,81 @@ public class EvilPumpkinApplication  {
 
 	public static void main(String[] args) {
 
-		reportCurrentStatus();
+//		sendToServerChan(InfoUtils.getDeviceInfo());
+		if (!StringUtils.isEmpty(getURL())){
+			sendToServerChan("Hello Evil Pumpkin");
+		}
 
 		SpringApplication.run(EvilPumpkinApplication.class, args);
 
 
 	}
 
-//	@Scheduled(cron = "0 */5 * * * ?")
 	@Scheduled(cron = "0 0 * * *  ?")
-	public static void reportCurrentStatus() {
-		logger.info("\n\n\n BEGIN --------------> Sending notify to serverchan ........");
-		try{
-			Map<String, String> map = new HashMap<>();
-			map.put("text", InfoUtils.get("currentStatus") + ": " + InfoUtils.getHostname());
-			map.put("desp", InfoUtils.getDeviceInfo());
+	public static void reportEveryHoursReport() {
+		logger.info("Every Hours Task: BEGIN");
 
-			HttpClientUtil.doPost("https://sc.ftqq.com/SCU48981T4fb6e368a395cf49b26f8bec99fe6cbf5cb93aed4ba36.send", map);
+		sendToServerChan(InfoUtils.getEveryHoursReport());
+
+		logger.info("Every Hours Task: END");
+	}
+
+	@Scheduled(cron = "0 0 0 * * ?")
+	public static void reportAllStatus() {
+		logger.info("Every Days Task: BEGIN");
+
+		sendToServerChan(InfoUtils.getDeviceInfo());
+
+		logger.info("Every Days Task: END");
+	}
+
+	public static void sendToServerChan(String text) {
+		try{
+			String url = getURL();
+			logger.info("sendToServerhChan:"+url);
+			if (!StringUtils.isEmpty(url)){
+				logger.info("Collecting information.......");
+				Map<String, String> map = new HashMap<>();
+				map.put("text", InfoUtils.get("currentStatus") + ": " + InfoUtils.getHostname());
+				map.put("desp", text);
+
+				HttpClientUtil.doPost(url, map);
+			}else{
+				logger.info("url is null, can not send info to serverchan...........");
+			}
 
 		}catch (Exception e){
 			e.printStackTrace();
 
 		}
+	}
 
 
-		logger.info("\n\n\n END --------------> Sending notify to serverchan ........");
+	private static String getURL(){
+		try {
+			InputStream in = null;
+			String currentPath=System.getProperty("user.dir");
+			Properties prop = new Properties();
+			File file = new File(currentPath+"/application.properties");
+			logger.info("Internal application property file.");
+			in = new BufferedInputStream(EvilPumpkinApplication.resourceLoader("application.properties"));
+			prop.load(new InputStreamReader(in,"UTF-8"));
+			if (file.exists()){
+				logger.info("External application property file.");
+				in = new FileInputStream(file);
+				prop.load(new InputStreamReader(in,"UTF-8"));
+			}
+
+
+
+
+			String url =prop.getProperty("serverchan.url","");
+			logger.info(url);
+			return url;
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return "";
 	}
 
 	@Scheduled(cron = "0 */1 * * * ?")
@@ -113,6 +168,26 @@ public class EvilPumpkinApplication  {
 		return new ArrayList<>();
 	}
 
+	public static InputStream resourceLoader(String fileFullPath) throws IOException {
+		return getInputStream(fileFullPath);
+	}
+
+	public static InputStream getInputStream(String fileFullPath) throws IOException {
+		String currentPath=System.getProperty("user.dir");
+		File file = new File(currentPath+File.separator+"application.properties");
+		logger.info("File Path: "+file.getAbsolutePath());
+		ResourceLoader resourceLoader = new DefaultResourceLoader();
+		if(file.exists()){
+			return  resourceLoader.getResource("file:"+file.getAbsolutePath()).getInputStream();
+		}
+
+		return resourceLoader.getResource(fileFullPath).getInputStream();
+	}
+
+	public static File loadFile(String fileFullPath) throws IOException {
+		ResourceLoader resourceLoader = new FileSystemResourceLoader();
+		return resourceLoader.getResource(fileFullPath).getFile();
+	}
 
 
 }

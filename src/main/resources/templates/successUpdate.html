@@ -1,0 +1,108 @@
+
+
+
+
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head lang="en" th:replace="@{fragments/header.html}" />
+<body class="page-body">
+
+<div lang="en" th:replace="@{fragments/user-profile.html}"> </div>
+
+<div class="page-container">
+
+
+    <div lang="en" th:replace="@{fragments/menu.html}" />
+
+
+
+
+
+
+    <!--  Insert your index page here. -->
+
+    <div class="row">
+        <div class="col-sm-12">
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title" th:text="#{page.menu.setting}" ></h3>
+                    <div class="panel-options">
+                        <a href="#" data-toggle="panel">
+                            <span class="collapse-icon">–</span>
+                            <span class="expand-icon">+</span>
+                        </a>
+                        <a href="#" data-toggle="remove">
+                            ×
+                        </a>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <label class="col-sm-2 control-label"  th:text="#{page.menu.setting.updated}">Input text field</label>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+
+    <!--  Insert your index page here. -->
+
+
+
+
+
+
+
+
+    <div lang="en" th:replace="@{fragments/copyright.html}"/>
+</div>
+</div>
+</body>
+<script type="text/javascript">
+    jQuery(document).ready(function($)
+    {
+        $("#sboxit-1").selectBoxIt().on('open', function()
+        {
+            // Adding Custom Scrollbar
+            $(this).data('selectBoxSelectBoxIt').list.perfectScrollbar();
+        });
+    });
+</script>
+<div lang="en" th:replace="@{fragments/footer.html}"/>
+</html>
+
+<script type="text/javascript">
+    jQuery(document).ready(function() {
+        var msg = "[[${msg}]]";
+        console.log(msg);
+        if (msg!=""){
+            toastr.info(msg, opts);
+        }
+
+
+
+
+    });
+
+    var opts = {
+        "closeButton": true,
+        "debug": false,
+        "positionClass": "toast-top-right toast-default",
+        "toastClass": "black",
+        "onclick": null,
+        "showDuration": "100",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    };
+</script>

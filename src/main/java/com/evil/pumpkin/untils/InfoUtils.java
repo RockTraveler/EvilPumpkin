@@ -5,12 +5,8 @@ import com.profesorfalken.jsensors.JSensors;
 import com.profesorfalken.jsensors.model.components.Components;
 import com.profesorfalken.jsensors.model.components.Cpu;
 import com.profesorfalken.jsensors.model.sensors.Temperature;
-import org.apache.http.HttpResponse;
-import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.DefaultResourceLoader;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.util.StringUtils;
 import oshi.PlatformEnum;
 import oshi.SystemInfo;
@@ -60,11 +56,102 @@ public class InfoUtils {
         sb.append(H6).append(get("dataProvided")).append(COLON).append(get("projectName")).append(ENTER);
         sb.append(LINE);
 
+        sb.append(getBaseInfo(hardware,os));
+        sb.append(getOSInfo(os));
+        sb.append(getHardwareInfo(hardware));
+        sb.append(getNetworkParameter(os));
+        sb.append(getFileSystem(os));
+        sb.append(getSystemProcess(os,hardware));
 
+
+//        /**
+//         *      Network Traffic Information
+//         */
+//        logger.info("To get Network Traffic");
+//        sb.append(H4).append(BOLD).append(get("networkTrafficInfo")).append(BOLD).append(ENTER).append(ENTER);
+
+
+        System.out.println(sb.toString());
+
+        return sb.toString();
+    }
+
+
+    public static String getEveryHoursReport(){
+        SystemInfo si = new SystemInfo();
+        HardwareAbstractionLayer hardware = si.getHardware();
+        OperatingSystem os = si.getOperatingSystem();
+        StringBuffer sb = new StringBuffer();
+
+        sb.append(H6).append(get("dataProvided")).append(COLON).append(get("projectName")).append(ENTER);
+        sb.append(LINE);
+
+        sb.append(getBaseInfo(hardware,os));
+        sb.append(getSystemProcess(os,hardware));
+
+        return sb.toString();
+
+    }
+
+
+
+    private static String getSystemProcess(OperatingSystem os,HardwareAbstractionLayer hardware){
+        /**
+         *     System Processes
+         */
+        logger.info("To get System Processes");
+        StringBuffer sb = new StringBuffer();
+        sb.append(H4).append(BOLD).append(get("systemProcess")).append(BOLD).append(ENTER).append(ENTER).append(ENTER);
+        sb.append(BOLD).append(get("processOrder")).append(BOLD).append(COLON).append(get("cpuUsage")).append(ENTER).append(ENTER).append(ENTER);
+        sb.append(getProcessesText(os,hardware.getMemory(), OperatingSystem.ProcessSort.CPU)).append(ENTER).append(ENTER);
+        sb.append(BOLD).append(get("processOrder")).append(BOLD).append(COLON).append(get("memoryUsage")).append(ENTER).append(ENTER).append(ENTER);
+        sb.append(getProcessesText(os,hardware.getMemory(), OperatingSystem.ProcessSort.MEMORY)).append(ENTER);
+        sb.append(LINE).append(ENTER);
+        return sb.toString();
+    }
+
+
+    private static String getFileSystem(OperatingSystem os){
+        /**
+         *      File System
+         */
+        logger.info("To get File System");
+        StringBuffer sb = new StringBuffer();
+        sb.append(H4).append(BOLD).append(get("fileSystem")).append(BOLD).append(ENTER).append(ENTER);
+        sb.append(getFileSystem(os.getFileSystem())).append(ENTER);
+        sb.append(LINE).append(ENTER);
+        return sb.toString();
+
+    }
+
+    private static String getNetworkParameter(OperatingSystem os){
+        /*
+         *  Network Parameters
+         */
+        StringBuffer sb = new StringBuffer();
+        sb.append(BOLD).append(get("networkParameters")).append(BOLD).append(ENTER).append(ENTER);
+        sb.append(getGatewayAndDNS(os.getNetworkParams()));
+        sb.append(ENTER).append(ENTER).append(LINE).append(ENTER);
+        return sb.toString();
+    }
+
+    private static String getOSInfo(OperatingSystem os) {
+        StringBuffer sb = new StringBuffer();
+
+        logger.info("To get OS");
+        sb.append(H4).append(BOLD).append(get("osInfo")).append(BOLD).append(ENTER).append(ENTER);
+        sb.append(H6).append(get("osVersion")).append(COLON).append(os.toString()).append(ENTER);
+        sb.append(H6).append(get("osArch")).append(COLON).append(System.getProperty("os.arch")).append(ENTER);
+        sb.append(LINE).append(ENTER);
+
+        return sb.toString();
+    }
+
+    private static String getBaseInfo(HardwareAbstractionLayer hardware,OperatingSystem os){
         /**
          *      Base Information
          **/
-
+        StringBuffer sb = new StringBuffer();
         logger.info("To get Base Information");
         sb.append(LINE).append(ENTER);
         sb.append(H4).append(BOLD).append(get("baseInfo")).append(BOLD).append(ENTER).append(ENTER);
@@ -81,21 +168,26 @@ public class InfoUtils {
         sb.append(H5).append(get("networkTraffic")).append(COLON).append(getNetworkTraffic(hardware.getNetworkIFs())).append(ENTER);
         sb.append(H5).append(get("mark")).append(COLON).append(BOLD).append(getMark()).append(BOLD).append(ENTER);
         sb.append(LINE).append(ENTER);
+        return sb.toString();
+    }
+    public static void main(String[] args) throws Exception {
+
+        Map<String, String> map = new HashMap<>();
+        map.put("text", InfoUtils.get("currentStatus") + ": " + InfoUtils.getHostname());
+        map.put("desp", InfoUtils.getDeviceInfo());
+
+        HttpClientUtil.doPost("https://sc.ftqq.com/SCU48981T4fb6e368a395cf49b26f8bec99fe6cbf5cb93aed4ba36.send", map);
 
 
-        /**
-         *      OS
-         **/
-        logger.info("To get OS");
-        sb.append(H4).append(BOLD).append(get("osInfo")).append(BOLD).append(ENTER).append(ENTER);
-        sb.append(H6).append(get("osVersion")).append(COLON).append(os.toString()).append(ENTER);
-        sb.append(H6).append(get("osArch")).append(COLON).append(System.getProperty("os.arch")).append(ENTER);
-        sb.append(LINE).append(ENTER);
+    }
 
+    public static String getHardwareInfo(HardwareAbstractionLayer hardware){
         /**
          *      Hardware part
          **/
         logger.info("To get Hardware part");
+
+        StringBuffer sb = new StringBuffer();
         //Processor
         sb.append(H4).append(BOLD).append(get("hardware")).append(BOLD).append(ENTER).append(ENTER);
         sb.append(BOLD).append(get("processor")).append(BOLD).append(ENTER);
@@ -113,9 +205,9 @@ public class InfoUtils {
         sb.append(LINE).append(ENTER);
 
         // Disk
-//        sb.append(BOLD).append(get("storage")).append(BOLD).append(ENTER).append(ENTER);
-//        sb.append(getDiskStores(hardware));
-//        sb.append(ENTER).append(ENTER).append(LINE).append(ENTER);
+        sb.append(BOLD).append(get("storage")).append(BOLD).append(ENTER).append(ENTER);
+        sb.append(getDiskStores(hardware));
+        sb.append(ENTER).append(ENTER).append(LINE).append(ENTER);
 
 
         //Network Interface
@@ -123,58 +215,7 @@ public class InfoUtils {
         sb.append(getNetworkInterface(hardware.getNetworkIFs()));
         sb.append(ENTER).append(ENTER).append(LINE).append(ENTER);
 
-
-        /*
-         *  Network Parameters
-         */
-        sb.append(BOLD).append(get("networkParameters")).append(BOLD).append(ENTER).append(ENTER);
-        sb.append(getGatewayAndDNS(os.getNetworkParams()));
-        sb.append(ENTER).append(ENTER).append(LINE).append(ENTER);
-
-
-
-        /**
-         *      File System
-         */
-        logger.info("To get File System");
-        sb.append(H4).append(BOLD).append(get("fileSystem")).append(BOLD).append(ENTER).append(ENTER);
-        sb.append(getFileSystem(os.getFileSystem())).append(ENTER);
-        sb.append(LINE).append(ENTER);
-
-
-        /**
-         *     System Processes
-         */
-        logger.info("To get System Processes");
-        sb.append(H4).append(BOLD).append(get("systemProcess")).append(BOLD).append(ENTER).append(ENTER).append(ENTER);
-        sb.append(BOLD).append(get("processOrder")).append(BOLD).append(COLON).append(get("cpuUsage")).append(ENTER).append(ENTER).append(ENTER);
-        sb.append(getProcessesText(os,hardware.getMemory(), OperatingSystem.ProcessSort.CPU)).append(ENTER).append(ENTER);
-        sb.append(BOLD).append(get("processOrder")).append(BOLD).append(COLON).append(get("memoryUsage")).append(ENTER).append(ENTER).append(ENTER);
-        sb.append(getProcessesText(os,hardware.getMemory(), OperatingSystem.ProcessSort.MEMORY)).append(ENTER);
-        sb.append(LINE).append(ENTER);
-
-        /**
-         *      Network Traffic Information
-         */
-        logger.info("To get Network Traffic");
-        sb.append(H4).append(BOLD).append(get("networkTrafficInfo")).append(BOLD).append(ENTER).append(ENTER);
-
-
-        System.out.println(sb.toString());
-
         return sb.toString();
-    }
-
-
-    public static void main(String[] args) throws Exception {
-
-        Map<String, String> map = new HashMap<>();
-        map.put("text", InfoUtils.get("currentStatus") + ": " + InfoUtils.getHostname());
-        map.put("desp", InfoUtils.getDeviceInfo());
-
-        HttpClientUtil.doPost("https://sc.ftqq.com/SCU48981T4fb6e368a395cf49b26f8bec99fe6cbf5cb93aed4ba36.send", map);
-
-
     }
 
 
@@ -216,15 +257,7 @@ public class InfoUtils {
 
 
     public static InputStream resourceLoader(String fileFullPath) throws IOException {
-        String currentPath = System.getProperty("user.dir");
-        File file = new File(currentPath + File.separator + "application.properties");
-
-        ResourceLoader resourceLoader = new DefaultResourceLoader();
-        if (file.exists()) {
-            return resourceLoader.getResource("file:" + file.getAbsolutePath()).getInputStream();
-        }
-
-        return resourceLoader.getResource(fileFullPath).getInputStream();
+        return EvilPumpkinApplication.getInputStream(fileFullPath);
     }
 
 
@@ -353,7 +386,6 @@ public class InfoUtils {
                 sb.append(get("sensorOrVMException")).append(ENTER);
             }
 
-            testPrint(sb.toString());
             return sb.toString();
         }else if (sensors.getCpuTemperature() < 0.1 || sensors.getCpuTemperature() == 0) {
             return get("temperatureException");
@@ -654,7 +686,4 @@ public class InfoUtils {
         return sb.toString();
     }
 
-    private static void testPrint(String x){
-        System.out.println("\n\n\n\n"+x+"\n\n\n\n");
-    }
 }
