@@ -114,8 +114,11 @@ public class HttpClientUtil {
          e.printStackTrace();
       } finally {
          try {
-            response.close();
-            httpClient.close();
+            if(response!=null){
+               log.info("Try to close http response and http client.");
+               response.close();
+               httpClient.close();
+            }
          } catch (IOException e) {
             e.printStackTrace();
          }

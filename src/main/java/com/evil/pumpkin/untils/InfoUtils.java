@@ -54,7 +54,7 @@ public class InfoUtils {
 
 
         sb.append(H6).append(get("dataProvided")).append(COLON).append(get("projectName")).append(ENTER);
-        sb.append(LINE);
+        sb.append(LINE).append(ENTER);
 
         sb.append(getBaseInfo(hardware,os));
         sb.append(getOSInfo(os));
@@ -76,6 +76,32 @@ public class InfoUtils {
         return sb.toString();
     }
 
+    public static String getBootInfo(){
+        StringBuffer sb = new StringBuffer();
+        sb.append(H6).append(get("dataProvided")).append(COLON).append(get("projectName")).append(ENTER);
+        sb.append(LINE).append(ENTER);
+        sb.append(H5).append(get("hello")).append(ENTER);
+        sb.append(H6).append(get("sysTime")).append(COLON).append(getFormatDate(new Date())).append(ENTER);
+        return sb.toString();
+    }
+    public static String getBootSubject(){
+        StringBuffer sb = new StringBuffer();
+        sb.append(get("bootInfo")).append(COLON).append(getHostname());
+        return sb.toString();
+    }
+
+    public static String getHourSubject(){
+        StringBuffer sb = new StringBuffer();
+        sb.append(get("currentHour")).append(COLON).append(getHostname());
+        return sb.toString();
+    }
+
+    public static String getCurrentSubject(){
+        StringBuffer sb = new StringBuffer();
+        sb.append(get("currentStatus")).append(COLON).append(getHostname());
+        return sb.toString();
+    }
+
 
     public static String getEveryHoursReport(){
         SystemInfo si = new SystemInfo();
@@ -84,7 +110,7 @@ public class InfoUtils {
         StringBuffer sb = new StringBuffer();
 
         sb.append(H6).append(get("dataProvided")).append(COLON).append(get("projectName")).append(ENTER);
-        sb.append(LINE);
+        sb.append(LINE).append(ENTER);
 
         sb.append(getBaseInfo(hardware,os));
         sb.append(getSystemProcess(os,hardware));
@@ -153,7 +179,6 @@ public class InfoUtils {
          **/
         StringBuffer sb = new StringBuffer();
         logger.info("To get Base Information");
-        sb.append(LINE).append(ENTER);
         sb.append(H4).append(BOLD).append(get("baseInfo")).append(BOLD).append(ENTER).append(ENTER);
         sb.append(H5).append(get("hostname")).append(COLON).append(getHostname()).append(ENTER);
         sb.append(getInternetIP());

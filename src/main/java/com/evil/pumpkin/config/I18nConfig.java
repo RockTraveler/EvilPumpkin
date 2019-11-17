@@ -4,8 +4,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -14,8 +12,6 @@ import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
@@ -36,7 +32,6 @@ public class I18nConfig {
         return resolver;
     }
 
-    // 配置一个拦截器，拦截国际化语言的变化
     @Bean
     public WebMvcConfigurer webMvcConfigurer() {
         return new WebMvcConfigurer() {
@@ -54,7 +49,6 @@ public class I18nConfig {
         ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
         if (!StringUtils.isEmpty(baseFolder)) {
             try {
-//                String[] baseNames = getAllBaseNames(baseFolder);
                 messageSource.setDefaultEncoding("UTF-8");
                 messageSource.setBasenames("i18n/messages");
 
@@ -65,24 +59,6 @@ public class I18nConfig {
         return messageSource;
     }
 
-    /**
-     * 获取文件夹下所有的国际化文件名
-     *
-     * @param folderName 文件名
-     * @return
-     * @throws IOException
-     */
-    private String[] getAllBaseNames(String folderName) throws IOException {
-        Resource resource = new ClassPathResource(folderName);
-        File file = resource.getFile();
-        List<String> baseNames = new ArrayList<>();
-        if (file.exists() && file.isDirectory()) {
-            this.getAllFile(baseNames, file, "");
-        } else {
-            System.out.println("指定的baseFile不存在或者不是文件夹");
-        }
-        return baseNames.toArray(new String[baseNames.size()]);
-    }
 
     /**
      * 遍历所有文件

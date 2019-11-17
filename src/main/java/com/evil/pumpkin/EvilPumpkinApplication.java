@@ -35,9 +35,8 @@ public class EvilPumpkinApplication  {
 
 	public static void main(String[] args) {
 
-//		sendToServerChan(InfoUtils.getDeviceInfo());
 		if (!StringUtils.isEmpty(getURL())){
-			sendToServerChan("Hello Evil Pumpkin");
+			sendToServerChan(InfoUtils.getBootInfo(),InfoUtils.getBootSubject());
 		}
 
 		SpringApplication.run(EvilPumpkinApplication.class, args);
@@ -48,34 +47,30 @@ public class EvilPumpkinApplication  {
 	@Scheduled(cron = "0 0 * * *  ?")
 	public static void reportEveryHoursReport() {
 		logger.info("Every Hours Task: BEGIN");
-
-		sendToServerChan(InfoUtils.getEveryHoursReport());
-
+		sendToServerChan(InfoUtils.getEveryHoursReport(),InfoUtils.getHourSubject());
 		logger.info("Every Hours Task: END");
 	}
 
 	@Scheduled(cron = "0 0 0 * * ?")
 	public static void reportAllStatus() {
 		logger.info("Every Days Task: BEGIN");
-
-		sendToServerChan(InfoUtils.getDeviceInfo());
-
+		sendToServerChan(InfoUtils.getDeviceInfo(),InfoUtils.getCurrentSubject());
 		logger.info("Every Days Task: END");
 	}
 
-	public static void sendToServerChan(String text) {
+	public static void sendToServerChan(String text,String subject) {
 		try{
 			String url = getURL();
 			logger.info("sendToServerhChan:"+url);
 			if (!StringUtils.isEmpty(url)){
 				logger.info("Collecting information.......");
 				Map<String, String> map = new HashMap<>();
-				map.put("text", InfoUtils.get("currentStatus") + ": " + InfoUtils.getHostname());
+				map.put("text", subject);
 				map.put("desp", text);
 
 				HttpClientUtil.doPost(url, map);
 			}else{
-				logger.info("url is null, can not send info to serverchan...........");
+				logger.info("url is null, can not send info to server chan...........");
 			}
 
 		}catch (Exception e){
@@ -85,7 +80,7 @@ public class EvilPumpkinApplication  {
 	}
 
 
-	private static String getURL(){
+	public static String getURL(){
 		try {
 			InputStream in = null;
 			String currentPath=System.getProperty("user.dir");
@@ -99,9 +94,6 @@ public class EvilPumpkinApplication  {
 				in = new FileInputStream(file);
 				prop.load(new InputStreamReader(in,"UTF-8"));
 			}
-
-
-
 
 			String url =prop.getProperty("serverchan.url","");
 			logger.info(url);

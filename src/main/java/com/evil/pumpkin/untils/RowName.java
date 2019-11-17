@@ -8,8 +8,11 @@ import java.util.List;
 public class RowName {
 
     private static final List<String> currentStatus = new ArrayList<>(Arrays.asList("当前状态", "Current Status"));
+    private static final List<String> currentHour = new ArrayList<>(Arrays.asList("整点状态", "Current Hour"));
+    private static final List<String> bootInfo = new ArrayList<>(Arrays.asList("启动信息", "Boot Info"));
     private static final List<String> dataProvided = new ArrayList<>(Arrays.asList("信息提供", "Data Provided"));
     private static final List<String> projectName = new ArrayList<>(Arrays.asList("邪恶南瓜", "Evil Pumpkin"));
+    private static final List<String> hello = new ArrayList<>(Arrays.asList("邪恶南瓜已成功启动", "Evil Pumpkin has been booted."));
 
 
 
@@ -126,4 +129,11 @@ public class RowName {
     private static final List<String> networkInterfaceException = new ArrayList<>(Arrays.asList("无网络接口", "Network Interface not found"));
     private static final List<String> unsupportSystem = new ArrayList<>(Arrays.asList("不支持的系统类型(缺失系统文件)", "Unsupport System delected(key system file missing)"));
 
+
+    /**
+     *  Nofity
+     */
+    private static final List<String> propertiesUpdated = new ArrayList<>(Arrays.asList("配置保存成功", "Properties has been updated."));
+    private static final List<String> sendMeg = new ArrayList<>(Arrays.asList("消息已重新发送，请查收。", "Notify has been sent out, please check with your wechat."));
+    private static final List<String> sendFail = new ArrayList<>(Arrays.asList("未获取到URL，或URL格式不正确", "Cann't fetch URL or incorrect URL format."));
 }

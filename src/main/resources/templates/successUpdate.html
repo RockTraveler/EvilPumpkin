@@ -41,7 +41,7 @@
                     </div>
                 </div>
                 <div class="panel-body">
-                    <label class="col-sm-2 control-label"  th:text="#{page.menu.setting.updated}">Input text field</label>
+                    <label class="col-sm-12 control-label"  th:text="#{page.menu.setting.updated}"></label>
 
                 </div>
             </div>
@@ -83,10 +83,21 @@
         console.log(msg);
         if (msg!=""){
             toastr.info(msg, opts);
+            $.ajax({
+                url: "/send",
+                data:"send" ,
+                type: "GET",
+                dataType: "json",
+                success: function(data) {
+                    console.log("Response:"+data.status);
+                    if (data.status=='200'){
+                        toastr.success(data.msg,successOpt);
+                    }else {
+                        toastr.error(data.msg,errorOpts);
+                    }
+                }
+            });
         }
-
-
-
 
     });
 
@@ -97,7 +108,7 @@
         "toastClass": "black",
         "onclick": null,
         "showDuration": "100",
-        "hideDuration": "1000",
+        "hideDuration": "3000",
         "timeOut": "5000",
         "extendedTimeOut": "1000",
         "showEasing": "swing",
@@ -105,4 +116,35 @@
         "showMethod": "fadeIn",
         "hideMethod": "fadeOut"
     };
+
+    var successOpt = {
+        "closeButton": true,
+        "debug": false,
+        "positionClass": "toast-bottom-right",
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "3000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    };
+
+    var errorOpts = {
+        "closeButton": true,
+        "debug": false,
+        "positionClass": "toast-top-full-width",
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "3000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    };
+
 </script>

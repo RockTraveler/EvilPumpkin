@@ -1,7 +1,9 @@
 package com.evil.pumpkin.controller;
 
 
+import com.alibaba.fastjson.JSON;
 import com.evil.pumpkin.EvilPumpkinApplication;
+import com.evil.pumpkin.entity.ResponseMessage;
 import com.evil.pumpkin.untils.InfoUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,10 +12,12 @@ import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -80,10 +84,6 @@ public class IndexController {
             model.addAttribute("serverchanURL",prop.getProperty("serverchan.url",""));
             model.addAttribute("mark",prop.getProperty("mark",""));
             model.addAttribute("language",prop.getProperty("language","0"));
-            logger.info("Current URL: "+serverchanURL);
-            if (!StringUtils.isEmpty(serverchanURL)&&isHttpUrl(serverchanURL)){
-                EvilPumpkinApplication.sendToServerChan(InfoUtils.getDeviceInfo());
-            }
 
             logger.info("[Success] application.properties updated");
         }catch (Exception e){
@@ -91,10 +91,32 @@ public class IndexController {
         }
 
         logger.info("----- END --- application.properties updating........");
-        model.addAttribute("msg","Properties has been updated.");
+        model.addAttribute("msg",InfoUtils.get("propertiesUpdated"));
 
         return "successUpdate";
     }
+
+    @RequestMapping(value = "/send",method = RequestMethod.GET)
+    @ResponseBody
+    public String send(Map<String, String> model) {
+        logger.info("----- BEGIN --- Test to send out server chan notify");
+        ResponseMessage responseMessage = new ResponseMessage();
+         String url= EvilPumpkinApplication.getURL();
+         if (!StringUtils.isEmpty(url)&&isHttpUrl(url)){
+             logger.info("----- Try to send out first notify when configuration updated. URL:"+url);
+             responseMessage.setStatus(ResponseMessage.OK);
+             EvilPumpkinApplication.sendToServerChan(InfoUtils.getDeviceInfo(),InfoUtils.getCurrentSubject());
+             responseMessage.setMsg(InfoUtils.get("sendMeg"));
+         }else{
+             logger.info("-----Null URL detected or incorrect format URL:"+url);
+             responseMessage.setStatus(ResponseMessage.ERROR);
+             responseMessage.setMsg(InfoUtils.get("sendFail"));
+         }
+
+        logger.info("----- END --- Test to send out server chan notify");
+        return JSON.toJSONString(responseMessage);
+    }
+
 
     public static boolean isHttpUrl(String urls) {
         boolean isurl = false;
