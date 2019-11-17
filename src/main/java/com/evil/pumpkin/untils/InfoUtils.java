@@ -22,7 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class InfoUtils {
-    private static final int LANGUAGE_SETTING = getLanguage();
+    private static  int LANGUAGE_SETTING = getLanguage();
     private static final String MARK = getMark();
     private static final String ENTER = "    \n";
     private static final String COLON = ": ";
@@ -264,7 +264,7 @@ public class InfoUtils {
             Field field = RowName.class.getDeclaredField(name);
             field.setAccessible(true);
             List<String> list = (List<String>) field.get(RowName.class);
-            return list.get(LANGUAGE_SETTING);
+            return list.get(getLanguage());
         } catch (Exception e) {
             return "unknown row name";
         }
@@ -288,12 +288,19 @@ public class InfoUtils {
 
     private static String getPropertiesValue(String propertyName) {
         try {
-            InputStream in = new BufferedInputStream(resourceLoader("application.properties"));
+            InputStream in = null;
+            String currentPath=System.getProperty("user.dir");
+            File file = new File(currentPath+"/application.properties");
+            if (file.exists()){
+                in = new FileInputStream(file);
+            }else{
+                in = new BufferedInputStream(EvilPumpkinApplication.resourceLoader("application.properties"));
+            }
+
+
             Properties prop = new Properties();
-//            prop.load(in);
-            BufferedReader bf = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-            prop.load(bf);
-            return prop.getProperty(propertyName);
+            prop.load(new InputStreamReader(in,"UTF-8"));
+            return prop.getProperty(propertyName,"0");
 
         } catch (Exception e) {
             e.printStackTrace();
