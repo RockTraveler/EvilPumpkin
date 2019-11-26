@@ -82,6 +82,7 @@ public class InfoUtils {
         sb.append(LINE).append(ENTER);
         sb.append(H5).append(get("hello")).append(ENTER);
         sb.append(H6).append(get("sysTime")).append(COLON).append(getFormatDate(new Date())).append(ENTER);
+        logger.info(sb.toString());
         return sb.toString();
     }
     public static String getBootSubject(){
@@ -114,7 +115,7 @@ public class InfoUtils {
 
         sb.append(getBaseInfo(hardware,os));
         sb.append(getSystemProcess(os,hardware));
-
+        logger.info(sb.toString());
         return sb.toString();
 
     }

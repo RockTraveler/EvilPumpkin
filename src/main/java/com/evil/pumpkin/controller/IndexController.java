@@ -32,7 +32,7 @@ public class IndexController {
         return "login";
     }
 
-    @RequestMapping("/index")
+    @RequestMapping("/")
     public String index(Model model) {
         logger.info("Entering index page..");
         StringBuffer stringBuffer = new StringBuffer();

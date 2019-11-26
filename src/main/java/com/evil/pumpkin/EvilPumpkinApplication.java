@@ -61,7 +61,7 @@ public class EvilPumpkinApplication  {
 	public static void sendToServerChan(String text,String subject) {
 		try{
 			String url = getURL();
-			logger.info("sendToServerhChan:"+url);
+			logger.info("send To Server Chan:"+url);
 			if (!StringUtils.isEmpty(url)){
 				logger.info("Collecting information.......");
 				Map<String, String> map = new HashMap<>();
@@ -160,20 +160,28 @@ public class EvilPumpkinApplication  {
 		return new ArrayList<>();
 	}
 
-	public static InputStream resourceLoader(String fileFullPath) throws IOException {
+	public static InputStream resourceLoader(String fileFullPath)  {
 		return getInputStream(fileFullPath);
 	}
 
-	public static InputStream getInputStream(String fileFullPath) throws IOException {
-		String currentPath=System.getProperty("user.dir");
-		File file = new File(currentPath+File.separator+"application.properties");
-		logger.info("File Path: "+file.getAbsolutePath());
-		ResourceLoader resourceLoader = new DefaultResourceLoader();
-		if(file.exists()){
-			return  resourceLoader.getResource("file:"+file.getAbsolutePath()).getInputStream();
+	public static InputStream getInputStream(String fileFullPath) {
+
+		try{
+			String currentPath=System.getProperty("user.dir");
+			File file = new File(currentPath+File.separator+"application.properties");
+			logger.info("File Path: "+file.getAbsolutePath());
+			ResourceLoader resourceLoader = new DefaultResourceLoader();
+			if(file.exists()){
+				return  resourceLoader.getResource("file:"+file.getAbsolutePath()).getInputStream();
+			}
+			return resourceLoader.getResource(fileFullPath).getInputStream();
+		}catch (Exception e){
+			e.printStackTrace();
 		}
 
-		return resourceLoader.getResource(fileFullPath).getInputStream();
+		return null;
+
+
 	}
 
 	public static File loadFile(String fileFullPath) throws IOException {
