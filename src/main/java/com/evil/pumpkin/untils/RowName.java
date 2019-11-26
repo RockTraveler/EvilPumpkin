@@ -33,7 +33,7 @@ public class RowName {
     private static final List<String> sysTime = new ArrayList<>(Arrays.asList("系统时间", "System Time"));
     private static final List<String> osBootTime = new ArrayList<>(Arrays.asList("启动时间", "OS Boot Time"));
     private static final List<String> osUptime = new ArrayList<>(Arrays.asList("运行时间", "OS  Uptime"));
-    private static final List<String> cpuLoad = new ArrayList<>(Arrays.asList("处理器负载", "Cpu Load"));
+    private static final List<String> cpuLoad = new ArrayList<>(Arrays.asList("处理器负载", "CPU Load"));
     private static final List<String> availableMemory = new ArrayList<>(Arrays.asList("可用内存", "Available Memory"));
     private static final List<String> cpuTemperature = new ArrayList<>(Arrays.asList("CPU温度", "CPU Temperature"));
     private static final List<String> fanSpeed = new ArrayList<>(Arrays.asList("风扇转速", "Fan Speed"));
